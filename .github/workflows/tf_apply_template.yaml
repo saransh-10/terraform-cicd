@@ -11,6 +11,10 @@ on:
         required: true
         type: string
 
+      var_file:
+        required: true
+        type: string
+
 jobs:
   terraform-apply:
     name: Terraform Apply
@@ -45,5 +49,5 @@ jobs:
 
       # Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=${{ github.workspace }}/Deployment/${{ inputs.environment }}.tfvars
+        run: terraform apply -auto-approve -var-file=${{ github.workspace }}/Deployment/${{ inputs.var_file }}
         working-directory: ${{ github.workspace }}/Workload
