@@ -1,6 +1,5 @@
 # Workflow deployment template
 name: Transit Workflow
-
 # Workflow trigger
 on:
   push:
