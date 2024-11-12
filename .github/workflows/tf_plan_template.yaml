@@ -4,8 +4,8 @@ on:
   workflow_dispatch: 
   workflow_call:
     secrets:
-      # Azure_Credential:
-      #   required: true
+      Azure_Credential:
+        required: true
       ARM_SECRET:
         required: true
 
@@ -39,7 +39,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.ARM_SECRET }}
+          creds: ${{ secrets.Azure_Credential }}
           
       - name: Terraform init azurerm backend
         uses: ahmedig/terraform-azurerm-backend@v4
