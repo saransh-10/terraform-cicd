@@ -45,5 +45,5 @@ jobs:
 
       # Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file=${{ github.workspace }}/Deployment/${{ inputs.environment }}.var-file
+        run: terraform apply -auto-approve -var-file=${{ github.workspace }}/Deployment/${{ inputs.environment }}.tfvars
         working-directory: ${{ github.workspace }}/Workload
