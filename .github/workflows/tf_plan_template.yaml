@@ -44,7 +44,7 @@ jobs:
           resource_group_name: Orica-RG
           container_name: tfstate
           storage_account_name: oricatest3
-          key: terraform1.tfstate
+          file_name: terraform1.tfstate
           tf_working_directory: ${{ github.workspace }}/Workload
 
       # Generate the execution plan for Terraform
