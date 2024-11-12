@@ -43,6 +43,7 @@ databricks_account_id = "4d49525d-9a29-4e03-8c1a-994ff431ce0d"
 # For metastore region
 metastore_region = "centralus"
 
+
 # Existing Databricks information 
 # workspaces = {
 #   "orica-transit-dbwbg" = {
