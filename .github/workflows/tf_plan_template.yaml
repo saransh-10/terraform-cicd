@@ -47,7 +47,7 @@ jobs:
       # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes
 
       - name: Terraform Plan
-        run: terraform plan -out=terraform.tfplan -var-file=${{ github.workspace }}/${{ inputs.var_file }}
+        run: terraform plan -out=terraform.tfplan -var-file=${{ github.workspace }}/Deployment/${{ inputs.var_file }}
         working-directory: ${{ github.workspace }}/Workload
 
       # Save plan to artifacts
