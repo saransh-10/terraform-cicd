@@ -6,16 +6,16 @@ on:
     secrets:
       Azure_Credential:
         required: true
-      ARM_SECRET:
-        required: true
-      ARM_CLIENT_ID:
-        required: true
-      ARM_SUBSCRIPTION_ID:
-        required: true
-      ARM_TENANT_ID:
-        required: true
-      ARM_CLIENT_SECRET:
-        required: true
+      # ARM_SECRET:
+      #   required: true
+      # ARM_CLIENT_ID:
+      #   required: true
+      # ARM_SUBSCRIPTION_ID:
+      #   required: true
+      # ARM_TENANT_ID:
+      #   required: true
+      # ARM_CLIENT_SECRET:
+      #   required: true
 
     inputs:
       environment:
@@ -45,24 +45,12 @@ jobs:
 
       # Authenticate to Azure
       - name: Login to Azure
-        run: |
-          az login --service-principal \
-            --username ${{ secrets.ARM_CLIENT_ID }} \
-            --password ${{ secrets.ARM_CLIENT_SECRET }} \
-            --tenant ${{ secrets.ARM_TENANT_ID }}
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.Azure_Credential }}
           
-      - name: Terraform Init with Options
-        run: |
-          terraform init \
-            # # -input=false \
-            # # -backend-config="resource_group_name=Orica-RG" \
-            # # -backend-config="storage_account_name=oricatest3" \
-            # # -backend-config="container_name=tfstate" \
-            # # -backend-config="key=terraform1.tfstate" \
-            # -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}" \
-            # -backend-config="client_secret=${{ secrets.ARM_CLIENT_SECRET }}" \
-            # -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
-            # -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+      - name: Terraform Init
+        run: terraform init
         working-directory: ${{ github.workspace }}/Workload
 
       # Generate the execution plan for Terraform
