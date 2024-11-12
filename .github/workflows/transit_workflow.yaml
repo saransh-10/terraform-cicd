@@ -16,7 +16,6 @@ jobs:
     uses: saransh-10/terraform-cicd/.github/workflows/tf_plan_template.yaml@main
     with:
       environment: transit
-      runs-on: ubuntu-latest
     secrets: inherit
 
   tf_apply:
@@ -26,5 +25,4 @@ jobs:
     uses: saransh-10/terraform-cicd/.github/workflows/tf_apply_template.yaml@main
     with:
       environment: release-transit
-      runs-on: ubuntu-latest
     secrets: inherit
