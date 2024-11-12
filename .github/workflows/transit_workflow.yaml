@@ -1,0 +1,30 @@
+# Workflow deployment template
+name: Transit Workflow
+
+# Workflow trigger
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Deployment/transit.tfvars'
+
+jobs:
+  tf_plan:
+    name: Terraform Plan
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+    uses: saransh-10/terraform-cicd/.github/workflows/tf_plan_template.yaml@main
+    with:
+      environment: transit
+      runs-on: ubuntu-latest
+    secrets: inherit
+
+  tf_apply:
+    name: Terraform Apply - Staging
+    if: ${{ github.event_name == 'push' }}
+    needs: [tf_plan]
+    uses: saransh-10/terraform-cicd/.github/workflows/tf_apply_template.yaml@main
+    with:
+      environment: release-transit
+      runs-on: ubuntu-latest
+    secrets: inherit
