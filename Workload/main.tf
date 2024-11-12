@@ -333,5 +333,5 @@ module "metastore_creation" {
 module "metastore_workspace_assignment" {
   source        = "../Modules/databricks/databricks-metastore-workspace-assignment"
   metastore_id  = module.metastore_creation[0].metastore_id
-  workspace_ids = local.workspace_ids
+  workspace_ids = split("-", split(".", module.databricksWorkspace.databricksWorkspaceUrl)[0])[1]
 }

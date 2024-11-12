@@ -205,8 +205,4 @@ variable "subscription_id" {
   description = "Subscription ID"
 }
 
-# 
-# 
-# variable "" {
-  
-# }
+# New vairable
