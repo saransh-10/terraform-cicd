@@ -8,6 +8,14 @@ on:
         required: true
       ARM_SECRET:
         required: true
+      ARM_CLIENT_ID:
+        required: true
+      ARM_SUBSCRIPTION_ID:
+        required: true
+      ARM_TENANT_ID:
+        required: true
+      ARM_CLIENT_SECRET:
+        required: true
 
     inputs:
       environment:
@@ -43,16 +51,16 @@ jobs:
           
       - name: Terraform Init with Options
         run: |
-          terraform init
+          terraform init \
             # -input=false \
             # -backend-config="resource_group_name=Orica-RG" \
             # -backend-config="storage_account_name=oricatest3" \
             # -backend-config="container_name=tfstate" \
             # -backend-config="key=terraform1.tfstate" \
-            # -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}" \
-            # -backend-config="client_secret=${{ secrets.ARM_CLIENT_SECRET }}" \
-            # -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
-            # -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}" \
+            -backend-config="client_secret=${{ secrets.ARM_CLIENT_SECRET }}" \
+            -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
+            -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
         working-directory: ${{ github.workspace }}/Workload
 
       # Generate the execution plan for Terraform
