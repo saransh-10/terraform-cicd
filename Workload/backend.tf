@@ -10,11 +10,3 @@ terraform {
     # subscription_id      = "367722a2-667e-40e3-ba4b-1078993dddf3"
   }
 }
-provider "azurerm" {
-  features {}
-  skip_provider_registration = true
-  subscription_id = var.subscriptionId
-  client_id       = var.clientId
-  client_secret   = var.clientSecret
-  tenant_id       = var.tenantId
-}
