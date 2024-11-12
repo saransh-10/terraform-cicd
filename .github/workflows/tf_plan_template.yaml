@@ -11,6 +11,11 @@ on:
         required: true
         type: string
 
+      var_file:
+        required: true
+        type: string
+      
+
 jobs:
   terraform-plan:
     name: Terraform Plan "${{ inputs.environment }}"
@@ -42,7 +47,7 @@ jobs:
       # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes
 
       - name: Terraform Plan
-        run: terraform plan -out=terraform.tfplan -var-file=${{ github.workspace }}/Deployment/${{ inputs.environment }}.tfvars
+        run: terraform plan -out=terraform.tfplan -var-file=${{ github.workspace }}/Deployment/${{ inputs.var_file }}
         working-directory: ${{ github.workspace }}/Workload
 
       # Save plan to artifacts
