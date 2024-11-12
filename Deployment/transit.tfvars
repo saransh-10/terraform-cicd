@@ -17,6 +17,7 @@ bu_name                       = "transit"
 environment                   = "transit"
 subnet_routetable_association = false
 
+
 # Compute
 vm_machine_size   = "Standard_B2s"
 vm_admin_username = "admintest"
