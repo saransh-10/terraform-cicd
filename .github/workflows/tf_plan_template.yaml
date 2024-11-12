@@ -5,6 +5,8 @@ on:
     secrets:
       Azure_Credential:
         required: true
+      ARM_SECRET:
+        required: true
 
     inputs:
       environment:
@@ -36,11 +38,12 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.Azure_Credential }}
+          creds: ${{ secrets.ARM_SECRET }}
+          
       - name: Terraform init azurerm backend
         uses: ahmedig/terraform-azurerm-backend@v4
         with:
-          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azure_credentials: ${{ secrets.ARM_SECRET }}
           resource_group_name: Orica-RG
           container_name: tfstate
           storage_account_name: oricatest3
