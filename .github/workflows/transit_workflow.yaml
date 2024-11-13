@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - 'Deployment/transit.tfvars'
-
 jobs:
   tf_pre-commit:
     name: Terraform Pre-commit
