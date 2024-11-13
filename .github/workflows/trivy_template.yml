@@ -1,0 +1,18 @@
+name: Trivy scanning
+on:
+  workflow_call:
+jobs:
+  pre-commit:
+    name: Pre-commit Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Verify Trivy Installation
+        run: trivy --version
+
+      - name: Install Trivy Vulnerability Scanner
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+                | sh -s -- -b ${{ vars.INSTALLPREFIX }} ${{ vars.TRIVYVERSION }}
