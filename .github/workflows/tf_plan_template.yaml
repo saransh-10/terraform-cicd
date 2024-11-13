@@ -1,22 +1,10 @@
 name: Base Terraform Plan Template
-
 on:
   workflow_dispatch: 
   workflow_call:
     secrets:
       Azure_Credential:
         required: true
-      # ARM_SECRET:
-      #   required: true
-      # ARM_CLIENT_ID:
-      #   required: true
-      # ARM_SUBSCRIPTION_ID:
-      #   required: true
-      # ARM_TENANT_ID:
-      #   required: true
-      # ARM_CLIENT_SECRET:
-      #   required: true
-
     inputs:
       environment:
         required: true
@@ -24,8 +12,7 @@ on:
 
       var_file:
         required: true
-        type: string
-      
+        type: string   
 
 jobs:
   terraform-plan:
