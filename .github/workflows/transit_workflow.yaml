@@ -7,13 +7,11 @@ on:
       - main
     paths:
       - 'Deployment/transit.tfvars'
-
 jobs:
   tf_pre-commit:
     name: Terraform Pre-commit
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
     uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
-    
   tf_plan:
     name: Terraform Plan
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
@@ -22,7 +20,6 @@ jobs:
       environment: transit
       var_file: transit.tfvars
     secrets: inherit
-
   tf_apply:
     name: Terraform Apply - Staging
     if: ${{ github.event_name == 'push' }}
