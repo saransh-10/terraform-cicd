@@ -1,0 +1,12 @@
+name: Transit Workflow
+# Workflow trigger
+on:
+  pull_request:
+    branches:
+      - main
+      - feature-collaboration
+jobs:
+  tf_pre-commit:
+    name: Terraform Pre-commit
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+    uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
