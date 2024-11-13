@@ -1,0 +1,63 @@
+name: Base Terraform Plan Template
+on:
+  workflow_dispatch: 
+  workflow_call:
+    secrets:
+      Azure_Credential:
+        required: true
+    inputs:
+      environment:
+        required: true
+        type: string
+
+      var_file:
+        required: true
+        type: string   
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan "${{ inputs.environment }}"
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment}}
+
+    steps:
+      # Checkout the repository
+      - name: Checkout
+        uses: "actions/checkout@v4"
+
+      # Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # Authenticate to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.Azure_Credential }}
+
+      - name: Set up Azure environment variables
+        run: |
+          echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ github.workspace }}/Workload
+
+      # Generate the execution plan for Terraform
+      # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes
+
+      - name: Terraform Plan
+        run: terraform plan -out=terraform.tfplan -var-file=${{ github.workspace }}/Deployment/${{ inputs.var_file }}
+        working-directory: ${{ github.workspace }}/Workload
+
+      # Save plan to artifacts
+      - name: Upload Terraform Plan
+        id: upload_plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: ${{ github.workspace }}

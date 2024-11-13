@@ -132,7 +132,7 @@ locals {
   }
 
   # Databricks Locals
-  storage_account_name             = lower("${var.org_name}${var.bu_name}dls2")
+  storage_account_name             = lower("${var.org_name}${var.bu_name}dls201")
   storage_container_metastore_name = lower("metastore")
   storage_container_ext_name       = lower("external")
   db_name                          = "${var.org_name}-${var.bu_name}-dbwbg"
@@ -148,6 +148,11 @@ locals {
 
   # Metastore Locals
   metastore_name = var.metastore_region
-  workspace_ids  = [for workspace in var.workspaces : workspace.id]
+  # workspace_ids  = [for workspace in var.workspaces : workspace.id]
+  #   workspace_ids = {
+  #   "orica-transit-dbwbg" = {
+  #     id = split("-", split(".", var.db_workspace_id)[0])[1]
+  #   },
+  # }
   container_name = local.storage_container_metastore_name
 }
