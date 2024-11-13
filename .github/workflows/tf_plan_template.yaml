@@ -1,6 +1,6 @@
 name: Base Terraform Plan Template
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   workflow_call:
     secrets:
       Azure_Credential:
@@ -11,7 +11,7 @@ on:
         type: string
       var_file:
         required: true
-        type: string   
+        type: string
 jobs:
   terraform-plan:
     name: Terraform Plan "${{ inputs.environment }}"
@@ -35,7 +35,7 @@ jobs:
           echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
           echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
-          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV        
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
       - name: Terraform Init
         run: terraform init
         working-directory: ${{ github.workspace }}/Workload
