@@ -1,6 +1,6 @@
 name: Base Terraform Plan Template
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   workflow_call:
     secrets:
       Azure_Credential:
@@ -11,7 +11,7 @@ on:
         type: string
       var_file:
         required: true
-        type: string   
+        type: string
 jobs:
   terraform-plan:
     name: Terraform Plan "${{ inputs.environment }}"
