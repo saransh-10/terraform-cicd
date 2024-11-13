@@ -50,6 +50,7 @@ metastore_region = "centralus"
 #   },
 # }
 
+
 # Service Principle
 #client_id       = "334c1b92-abaf-472f-916e-905ba89e0f3c"
 #client_secret   = "jjg8Q~5ED2YE4KwQ1EnjkSuJmrrpSTEd2F33mbdw"
