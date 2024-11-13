@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-      - feature-collaboration
+      - feature
 jobs:
   tf_pre-commit:
     name: Terraform Pre-commit
