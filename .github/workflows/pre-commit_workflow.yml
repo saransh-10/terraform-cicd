@@ -8,5 +8,5 @@ on:
 jobs:
   tf_pre-commit:
     name: Terraform Pre-commit
-    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+    if: ${{ github.event_name == 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature') }}
     uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
