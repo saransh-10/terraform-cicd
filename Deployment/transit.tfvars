@@ -6,8 +6,8 @@ subnet_compute_address_prefix = ["10.10.0.0/24"]
 nsg_tags = {
   "owner" = "orica"
 }
-org_name                      = "orica"
-bu_name                       = "vm"
+org_name = "orica"
+bu_name  = "vm"
 # environment                   = "vm"
 subnet_routetable_association = false
 # Compute
