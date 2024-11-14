@@ -13,7 +13,7 @@ locals {
   subnet_container_name = lower("${var.org_name}-${var.bu_name}-container-snet-01")
   subnet_pep_name       = lower("${var.org_name}-${var.bu_name}-snet-pep-01")
   subnet_compute_name   = lower("${var.org_name}-${var.bu_name}-snet-compute-01")
-  # Privat DNS Zone 
+  # Privat DNS Zone
   private_dns_zone_name = [
     "privatelink.blob.core.windows.net",
     "privatelink.dfs.core.windows.net",
@@ -26,7 +26,7 @@ locals {
   # Subnets private endpoint network policy enabled or disabled(enabled in case of subnet stores private endpoints)
   # subnet_private_endpoint_network_policy_false = false
   # subnet_private_endpoint_network_policy_true  = true
-  # Subnet deligations 
+  # Subnet deligations
   subnet_delegation = {
     subnet_delegation_name  = "databricks-del-public"
     service_delegation_name = "Microsoft.Databricks/workspaces"
@@ -45,7 +45,7 @@ locals {
   ## disable bgp route propagation
   # disable_bgp_route_propagation = true
   # enable_bgp_route_propagation  = false
-  # Service endpoints 
+  # Service endpoints
   service_endpoints = toset([
     "Microsoft.Storage",
     "Microsoft.AzureActiveDirectory",
