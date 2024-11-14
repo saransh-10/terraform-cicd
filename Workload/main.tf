@@ -41,7 +41,6 @@ module "subnet_compute" {
   subnet_address_prefixes                       = var.subnet_compute_address_prefix
   subnet_rg_name                                = module.RG.resource_group_name
   virtual_network_name                          = module.vnet.virtual_network_name
-  location                                      = local.location
   subnet_delegations                            = local.subnet_delegation_null
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_compute.nsg_id
