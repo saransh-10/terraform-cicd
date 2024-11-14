@@ -11,10 +11,11 @@ jobs:
   tf_pre-commit:
     name: Terraform Pre-commit
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
-    uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main    
+    uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
   tf_plan:
     name: Terraform Plan
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+    needs: [tf_pre-commit]
     uses: saransh-10/terraform-cicd/.github/workflows/tf_plan_template.yaml@main
     with:
       environment: transit
