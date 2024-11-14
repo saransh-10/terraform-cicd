@@ -31,12 +31,12 @@ locals {
     },
     vm_access_Inbound = {
       name                       = "VMAccess_Outbound"
-      priority                   = 100
+      priority                   = 101
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "*"
       source_port_range          = "*"
-      destination_port_range     = "*"
+      destination_port_range     = "22"
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     }
