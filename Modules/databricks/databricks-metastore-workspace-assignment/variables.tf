@@ -6,4 +6,3 @@ variable "workspace_ids" {
   type        = any
   description = "List of Ids of the workspaces for the assignment to the metastore"
 }
-

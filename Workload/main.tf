@@ -6,7 +6,6 @@ module "RG" {
   resource_group_name     = local.resource_group_name
   resource_group_location = local.location
 }
-
 # ......................................................
 # Creating New Virtual Network
 # ......................................................
@@ -18,7 +17,6 @@ module "vnet" {
   resource_group_name           = module.RG.resource_group_name
   virtual_network_tags          = var.vnet_tags
 }
-
 # ......................................................
 # Creation of Host Subnet
 # ......................................................
@@ -35,7 +33,6 @@ module "subnet_host" {
   nsg_id                                        = module.nsg_snet_host.nsg_id
   subnet_rt_association                         = var.subnet_routetable_association
 }
-
 # ......................................................
 # Creation of Container Subnet 
 # ......................................................
@@ -52,7 +49,6 @@ module "subnet_container" {
   nsg_id                                        = module.nsg_snet_container.nsg_id
   subnet_rt_association                         = var.subnet_routetable_association
 }
-
 # ......................................................
 # Creation of Private Endpoint Subnet
 # ......................................................
@@ -69,7 +65,6 @@ module "subnet_pep" {
   subnet_nsg_association                        = false
   subnet_rt_association                         = var.subnet_routetable_association
 }
-
 # ......................................................
 # Creation of Compute Subnet
 # ......................................................
@@ -87,7 +82,6 @@ module "subnet_compute" {
   subnet_nsg_association                        = false
   subnet_rt_association                         = var.subnet_routetable_association
 }
-
 # ......................................................
 # Creation of NSG for Host
 # ......................................................
@@ -106,7 +100,6 @@ module "nsg_snet_host" {
   nsg_tags   = var.nsg_tags
   depends_on = [module.vnet]
 }
-
 # ......................................................
 # Creation of NSG for Container 
 # ......................................................
@@ -125,7 +118,6 @@ module "nsg_snet_container" {
   nsg_tags   = var.nsg_tags
   depends_on = [module.vnet]
 }
-
 # ......................................................
 # Creating Private DNS Zone 
 # ......................................................
@@ -137,7 +129,6 @@ module "private_dns_zone" {
   private_dns_zone_tags                = var.PDZ_tags
   depends_on                           = [module.vnet]
 }
-
 # ......................................................
 # Creating Private DNS Zone Vnet Link
 # ......................................................
@@ -152,8 +143,6 @@ module "Vnet_Link" {
   private_dns_link_tags                 = var.PDZ_tags
   depends_on                            = [module.private_dns_zone]
 }
-
-
 # Compute Workload
 # ......................................................
 # Creating Compute for SHIR/SHA only for Transit RG
@@ -174,7 +163,6 @@ module "compute" {
   admin_ssh_key          = null
   admin_password         = var.vm_admin_password
 }
-
 # Databricks Workload
 # ......................................................
 # Creating ADLSGen2 for metastore 
@@ -188,7 +176,6 @@ module "ADLSGen2" {
   network_rule         = var.network_access_adls
   depends_on           = [module.vnet]
 }
-
 # ......................................................
 # Creating Container for metastore
 # ......................................................
@@ -200,7 +187,6 @@ module "container_metastore" {
   container_access_type  = var.container_access_type
   depends_on             = [module.ADLSGen2]
 }
-
 # ......................................................
 # Creating Container for external Location
 # ......................................................
@@ -212,7 +198,6 @@ module "container_external_location" {
   container_access_type  = var.container_access_type
   depends_on             = [module.ADLSGen2]
 }
-
 # ......................................................
 # Module: Azure Databricks Access Connector
 # ......................................................
@@ -226,7 +211,6 @@ module "databricksAccessConnector" {
   role_definition_name          = var.role_definition_name
   depends_on                    = [module.ADLSGen2]
 }
-
 # ......................................................
 # Module: Azure Databricks Workspace
 # ......................................................
@@ -246,7 +230,6 @@ module "databricksWorkspace" {
   tags                        = var.tags
   depends_on                  = [module.databricksAccessConnector, module.ADLSGen2]
 }
-
 # ..........................................................................
 # Module: Browser Authentication Private Endpoint for Databricks Workspace
 # ..........................................................................
@@ -264,9 +247,7 @@ module "databricksBrowsAuthPEP" {
   dnsZoneGroupName             = local.db_browsauth_pe_dns_group_name
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[2].private_dns_zone_id
-
 }
-
 # ..........................................................
 # Module: UI-API Private Endpoint for Databricks Workspace
 # ..........................................................
@@ -284,7 +265,6 @@ module "databricksUiApiPEP" {
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[2].private_dns_zone_id
 }
-
 # ......................................................
 # Module: DFS Private Endpoint for Storage Account
 # ......................................................
@@ -301,9 +281,7 @@ module "adlsGen2DfsPEP" {
   dnsZoneGroupName             = local.adls_dfs_pe_dns_group_name
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[1].private_dns_zone_id
-
 }
-
 # ......................................................
 # Module: Blob Private Endpoint for Storage Account
 # ......................................................
@@ -321,7 +299,6 @@ module "adlsGen2BlobPEP" {
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[0].private_dns_zone_id
 }
-
 # Metastore Workload
 # Module to create the Databricks metastore.
 module "metastore_creation" {
@@ -333,7 +310,6 @@ module "metastore_creation" {
   acc_name         = module.databricksAccessConnector.access_id
   depends_on       = [module.RG, module.vnet, module.databricksWorkspace, module.ADLSGen2, module.databricksAccessConnector]
 }
-
 # Module to assign the created metastore to the Databricks workspaces.
 module "metastore_workspace_assignment_transit" {
   count         = var.environment == "transit" ? 1 : 0
@@ -341,7 +317,6 @@ module "metastore_workspace_assignment_transit" {
   metastore_id  = module.metastore_creation[0].metastore_id
   workspace_ids = split("-", split(".", module.databricksWorkspace.databricksWorkspaceUrl)[0])[1]
 }
-
 # Module to assign the created metastore to the Databricks workspaces if metastore is already created.
 module "metastore_workspace_assignment" {
   count         = var.environment == "transit" ? 0 : 1

@@ -15,7 +15,6 @@ resource "databricks_metastore" "metastore-creation" {
     prevent_destroy = false
   }
 }
-
 resource "databricks_metastore_data_access" "access" {
   metastore_id = databricks_metastore.metastore-creation.id
   name         = "mi_dac"

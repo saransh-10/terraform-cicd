@@ -35,14 +35,5 @@ publicNetworkAccessEnabled = false
 # For databricks authentication service principal
 databricks_host_name  = "https://accounts.azuredatabricks.net/"
 databricks_account_id = "4d49525d-9a29-4e03-8c1a-994ff431ce0d"
-
 # For metastore region
 metastore_region = "centralus"
-
-# Existing Databricks information 
-# workspaces = {
-#   "orica-transit-dbwbg" = {
-#     id = "3961089435610628"
-#   },
-# }
-

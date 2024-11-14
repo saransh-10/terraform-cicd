@@ -12,7 +12,6 @@ resource "azurerm_storage_account" "storage" {
     type         = var.storage_identity_type
     identity_ids = var.storage_identity_type == "SystemAssigned" ? [] : var.storage_identity_id
   }
-
   # This block specifies lifecycle settings for AKS, ignoring changes based on the provided lifecycle configuration.
   # lifecycle {
   #   ignore_changes = [var.lifecycle_ignore_changes]

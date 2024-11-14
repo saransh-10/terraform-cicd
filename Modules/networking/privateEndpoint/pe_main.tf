@@ -19,4 +19,3 @@ resource "azurerm_private_endpoint" "pep" {
     }
   }
 }
-

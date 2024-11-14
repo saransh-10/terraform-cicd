@@ -17,14 +17,12 @@ resource "azurerm_subnet" "subnets" {
     }
   }
 }
-
 resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   count                     = var.subnet_nsg_association == true ? 1 : 0
   subnet_id                 = azurerm_subnet.subnets.id
   network_security_group_id = var.nsg_id
   depends_on                = [azurerm_subnet.subnets]
 }
-
 resource "azurerm_subnet_route_table_association" "rt_association" {
   count          = var.subnet_rt_association == true ? 1 : 0
   subnet_id      = azurerm_subnet.subnets.id

@@ -10,11 +10,9 @@ terraform {
     }
   }
 }
-
 provider "azurerm" {
   features {}
 }
-
 # Provider configuration for Databricks.
 provider "databricks" {
   host                = var.databricks_host_name
