@@ -41,7 +41,7 @@ variable "peNicName" {
 variable "isManualConnection" {
   description = "A boolean flag indicating whether the service connection is manual or not."
   type        = bool
-  default = false
+  default     = false
 }
 
 variable "privateDnsZoneIds" {
@@ -56,6 +56,6 @@ variable "dnsZoneGroupName" {
 }
 
 variable "privateDnsZoneGroupCondition" {
-  type = bool
+  type        = bool
   description = "Condition for Private DNS Zone integration."
 }

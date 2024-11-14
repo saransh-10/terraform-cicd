@@ -11,6 +11,9 @@ resource "databricks_metastore" "metastore-creation" {
   region        = var.metastore_region
   storage_root  = var.adls_name
   force_destroy = true
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 
 resource "databricks_metastore_data_access" "access" {

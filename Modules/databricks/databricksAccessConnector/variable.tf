@@ -1,5 +1,5 @@
 variable "databricksAccessConnectorName" {
-  type = string
+  type        = string
   description = "Name of the Databricks Access Connector to be created."
 }
 
@@ -19,11 +19,11 @@ variable "tags" {
 }
 
 variable "storage_account_id" {
-  type = string
+  type        = string
   description = "Storage account id for access connector role assignment"
 }
 
 variable "role_definition_name" {
-  type = string
+  type        = string
   description = "Role required Ex Storage Blob Data Contributor"
 }

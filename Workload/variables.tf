@@ -32,6 +32,7 @@ variable "subnet_pep_address_prefix" {
 variable "subnet_compute_address_prefix" {
   type        = list(string)
   description = "A list of address prefixes for the compute subnet."
+  default     = [""]
 }
 
 # Variable to define tags for the network security groups
@@ -87,12 +88,6 @@ variable "vm_admin_password" {
 }
 
 # Databricks Variables
-# Variable for existing vnet
-variable "existingVnetName" {
-  type        = string
-  description = "Existing Vnet name"
-}
-
 # Variable for public access for the databricks workspace
 variable "publicNetworkAccessEnabled" {
   type        = bool
@@ -106,13 +101,6 @@ variable "databricksWorkspace" {
   })
   description = "Premium or Standard"
 }
-
-# Variable for the resource group
-variable "rg_name" {
-  type        = string
-  description = "The name of the resource group."
-}
-
 
 # Variable for the tags
 variable "tags" {
@@ -172,17 +160,15 @@ variable "metastore_region" {
 }
 
 # Environment resource group configurations
-variable "workspaces" {
-  description = "Workspace and Resource group configuration for the environment"
-  type = map(object({
-    id = string
-  }))
-  default = {}
-  validation {
-    condition     = length(var.workspaces) >= 0
-    error_message = "[workspaces] must contain at least one resource group configuration"
-  }
-}
+# variable "workspaces" {
+#   description = "Workspace and Resource group configuration for the environment"
+#   type = map(object({
+#     id = string
+#   }))
+#   default = {}
+#   validation {
+#     condition     = length(var.workspaces) >= 0
+#     error_message = "[workspaces] must contain at least one resource group configuration"
+#   }
+# }
 
-
-# New vairable

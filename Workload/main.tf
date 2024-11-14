@@ -33,7 +33,7 @@ module "subnet_host" {
   service_endpoints                             = local.service_endpoints
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_snet_host.nsg_id
-  subnet_rt_association                         = false
+  subnet_rt_association                         = var.subnet_routetable_association
 }
 
 # ......................................................
@@ -50,7 +50,7 @@ module "subnet_container" {
   service_endpoints                             = local.service_endpoints
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_snet_container.nsg_id
-  subnet_rt_association                         = false
+  subnet_rt_association                         = var.subnet_routetable_association
 }
 
 # ......................................................
@@ -67,13 +67,14 @@ module "subnet_pep" {
   service_endpoints                             = local.service_endpoints
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   subnet_nsg_association                        = false
-  subnet_rt_association                         = false
+  subnet_rt_association                         = var.subnet_routetable_association
 }
 
 # ......................................................
 # Creation of Compute Subnet
 # ......................................................
 module "subnet_compute" {
+  count                                         = var.environment == "transit" ? 1 : 0
   source                                        = "../Modules/networking/subnet"
   subnet_name                                   = local.subnet_compute_name
   subnet_address_prefixes                       = var.subnet_compute_address_prefix
@@ -84,7 +85,7 @@ module "subnet_compute" {
   service_endpoints                             = local.service_endpoints
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   subnet_nsg_association                        = false
-  subnet_rt_association                         = false
+  subnet_rt_association                         = var.subnet_routetable_association
 }
 
 # ......................................................
@@ -155,13 +156,14 @@ module "Vnet_Link" {
 
 # Compute Workload
 # ......................................................
-# Creating Compute for SHIR/SHA
+# Creating Compute for SHIR/SHA only for Transit RG
 # ......................................................
 module "compute" {
+  count                  = var.environment == "transit" ? 1 : 0
   source                 = "../Modules/vm-linux"
   vm_admin_username      = var.vm_admin_username
   vm_machine_size        = var.vm_machine_size
-  nic_subnet_id          = module.subnet_compute.subnet_id
+  nic_subnet_id          = module.subnet_compute[0].subnet_id
   vm_location            = module.RG.resource_group_location
   vm_name                = local.vm_machine_name
   network_interface_name = local.network_interface_name
@@ -184,6 +186,7 @@ module "ADLSGen2" {
   storage_account_name = local.storage_account_name
   storage_identity_id  = ["SystemAssigned"]
   network_rule         = var.network_access_adls
+  depends_on           = [module.vnet]
 }
 
 # ......................................................
@@ -215,7 +218,7 @@ module "container_external_location" {
 # ......................................................
 module "databricksAccessConnector" {
   source                        = "../Modules/databricks/databricksAccessConnector"
-  databricksAccessConnectorName = "${var.org_name}-${var.bu_name}-dbwaccbg"
+  databricksAccessConnectorName = local.access_connector_name
   location                      = module.RG.resource_group_location
   rgName                        = module.RG.resource_group_name
   tags                          = var.tags
@@ -241,6 +244,7 @@ module "databricksWorkspace" {
   databricksSku               = var.databricksWorkspace.sku
   publicNetworkAccessEnabled  = var.publicNetworkAccessEnabled
   tags                        = var.tags
+  depends_on                  = [module.databricksAccessConnector, module.ADLSGen2]
 }
 
 # ..........................................................................
@@ -249,15 +253,15 @@ module "databricksWorkspace" {
 module "databricksBrowsAuthPEP" {
   count                        = var.environment == "transit" ? 1 : 0
   source                       = "../Modules/networking/privateEndpoint"
-  peName                       = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1"
+  peName                       = local.db_browsauth_pe_name
   location                     = module.RG.resource_group_location
   rgName                       = module.RG.resource_group_name
   peSubnetId                   = module.subnet_pep.subnet_id
-  peNicName                    = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1-nic"
-  serviceConnectionName        = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1"
+  peNicName                    = local.db_browsauth_pe_nic_name
+  serviceConnectionName        = local.db_browsauth_pe_service_name
   privateResourceId            = module.databricksWorkspace.databricksWorkspaceId
   subresourceNames             = local.TargetSubresource.dbbrowsAuthPeSubresourceNames
-  dnsZoneGroupName             = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1-dnsgroup"
+  dnsZoneGroupName             = local.db_browsauth_pe_dns_group_name
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[2].private_dns_zone_id
 
@@ -268,15 +272,15 @@ module "databricksBrowsAuthPEP" {
 # ..........................................................
 module "databricksUiApiPEP" {
   source                       = "../Modules/networking/privateEndpoint"
-  peName                       = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1"
+  peName                       = local.db_uiapi_pe_name
   location                     = module.RG.resource_group_location
   rgName                       = module.RG.resource_group_name
   peSubnetId                   = module.subnet_pep.subnet_id
-  peNicName                    = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1-nic"
-  serviceConnectionName        = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1"
+  peNicName                    = local.db_uiapi_pe_nic_name
+  serviceConnectionName        = local.db_uiapi_pe_service_name
   privateResourceId            = module.databricksWorkspace.databricksWorkspaceId
   subresourceNames             = local.TargetSubresource.dbUiApiPeSubresourceNames
-  dnsZoneGroupName             = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1-dnsgroup"
+  dnsZoneGroupName             = local.db_uiapi_pe_dns_group_name
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[2].private_dns_zone_id
 }
@@ -286,15 +290,15 @@ module "databricksUiApiPEP" {
 # ......................................................
 module "adlsGen2DfsPEP" {
   source                       = "../Modules/networking/privateEndpoint"
-  peName                       = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1"
+  peName                       = local.adls_dfs_pe_name
   location                     = module.RG.resource_group_location
   rgName                       = module.RG.resource_group_name
   peSubnetId                   = module.subnet_pep.subnet_id
-  peNicName                    = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1-nic"
-  serviceConnectionName        = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1"
+  peNicName                    = local.adls_dfs_pe_nic_name
+  serviceConnectionName        = local.adls_dfs_pe_service_name
   privateResourceId            = module.ADLSGen2.storage_account_id
   subresourceNames             = local.TargetSubresource.adlsGen2DfsPeSubresourceNames
-  dnsZoneGroupName             = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1-dnsgroup"
+  dnsZoneGroupName             = local.adls_dfs_pe_dns_group_name
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[1].private_dns_zone_id
 
@@ -305,15 +309,15 @@ module "adlsGen2DfsPEP" {
 # ......................................................
 module "adlsGen2BlobPEP" {
   source                       = "../Modules/networking/privateEndpoint"
-  peName                       = "${var.org_name}-${var.bu_name}-dls2-blob-pe1"
+  peName                       = local.adls_blob_pe_name
   location                     = module.RG.resource_group_location
   rgName                       = module.RG.resource_group_name
   peSubnetId                   = module.subnet_pep.subnet_id
-  peNicName                    = "${var.org_name}-${var.bu_name}-dls2-blob-pe1-nic"
-  serviceConnectionName        = "${var.org_name}-${var.bu_name}-dls2-blob-pe1"
+  peNicName                    = local.adls_blob_pe_nic_name
+  serviceConnectionName        = local.adls_blob_pe_service_name
   privateResourceId            = module.ADLSGen2.storage_account_id
   subresourceNames             = local.TargetSubresource.adlsGen2BlobPeSubresourceNames
-  dnsZoneGroupName             = "${var.org_name}-${var.bu_name}-dls2-blob-pe1-dnsgroup"
+  dnsZoneGroupName             = local.adls_blob_pe_dns_group_name
   privateDnsZoneGroupCondition = true
   privateDnsZoneIds            = module.private_dns_zone[0].private_dns_zone_id
 }
@@ -323,15 +327,25 @@ module "adlsGen2BlobPEP" {
 module "metastore_creation" {
   count            = var.environment == "transit" ? 1 : 0
   source           = "../Modules/databricks/databricks-metastore-creation"
-  metastore_name   = var.metastore_region
+  metastore_name   = local.metastore_name
   metastore_region = var.metastore_region
-  adls_name        = format("abfss://%s@%s.dfs.core.windows.net/", local.container_name, local.storage_account_name)
+  adls_name        = local.metastore_storage_container_name
   acc_name         = module.databricksAccessConnector.access_id
+  depends_on       = [module.RG, module.vnet, module.databricksWorkspace, module.ADLSGen2, module.databricksAccessConnector]
 }
 
 # Module to assign the created metastore to the Databricks workspaces.
-module "metastore_workspace_assignment" {
+module "metastore_workspace_assignment_transit" {
+  count         = var.environment == "transit" ? 1 : 0
   source        = "../Modules/databricks/databricks-metastore-workspace-assignment"
   metastore_id  = module.metastore_creation[0].metastore_id
+  workspace_ids = split("-", split(".", module.databricksWorkspace.databricksWorkspaceUrl)[0])[1]
+}
+
+# Module to assign the created metastore to the Databricks workspaces if metastore is already created.
+module "metastore_workspace_assignment" {
+  count         = var.environment == "transit" ? 0 : 1
+  source        = "../Modules/databricks/databricks-metastore-workspace-assignment"
+  metastore_id  = data.databricks_metastores.all[0].ids["centralus"]
   workspace_ids = split("-", split(".", module.databricksWorkspace.databricksWorkspaceUrl)[0])[1]
 }

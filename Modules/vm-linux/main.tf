@@ -10,17 +10,17 @@ resource "azurerm_network_interface" "vm_nic" {
     subnet_id                     = var.nic_subnet_id
     private_ip_address_allocation = var.nic_private_ip_address_allocation
   }
-  
+
 }
 
 # This Terraform block defines an Azure Linux virtual machine with specified parameters.
 resource "azurerm_linux_virtual_machine" "virtual_machine" {
-  name                            = var.vm_name
-  resource_group_name             = var.vm_resource_group_name
-  location                        = var.vm_location
-  size                            = var.vm_machine_size
-  admin_username                  = var.vm_admin_username
-  network_interface_ids           = [azurerm_network_interface.vm_nic.id]
+  name                  = var.vm_name
+  resource_group_name   = var.vm_resource_group_name
+  location              = var.vm_location
+  size                  = var.vm_machine_size
+  admin_username        = var.vm_admin_username
+  network_interface_ids = [azurerm_network_interface.vm_nic.id]
   # source_image_id                 = var.source_image_id
   computer_name                   = var.vm_admin_username
   admin_password                  = var.admin_ssh_key != null ? null : var.admin_password
@@ -43,9 +43,9 @@ resource "azurerm_linux_virtual_machine" "virtual_machine" {
 
   # This dynamic block defines the source image reference for the Azure Linux virtual machine, based on provided image parameters if the source image ID is not specified.
   source_image_reference {
-      sku       = var.vm_image_reference.sku
-      version   = var.vm_image_reference.version
-      publisher = var.vm_image_reference.publisher
-      offer     = var.vm_image_reference.offer
+    sku       = var.vm_image_reference.sku
+    version   = var.vm_image_reference.version
+    publisher = var.vm_image_reference.publisher
+    offer     = var.vm_image_reference.offer
   }
 }

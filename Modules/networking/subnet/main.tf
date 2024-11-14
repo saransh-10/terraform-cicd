@@ -1,8 +1,8 @@
 resource "azurerm_subnet" "subnets" {
-  name                                          = var.subnet_name
-  resource_group_name                           = var.subnet_rg_name
-  address_prefixes                              = var.subnet_address_prefixes
-  virtual_network_name                          = var.virtual_network_name
+  name                 = var.subnet_name
+  resource_group_name  = var.subnet_rg_name
+  address_prefixes     = var.subnet_address_prefixes
+  virtual_network_name = var.virtual_network_name
   # private_endpoint_network_policies_enabled     = var.private_endpoint_network_policies_enabled
   private_link_service_network_policies_enabled = var.private_link_service_network_policies_enabled
   service_endpoints                             = var.service_endpoints

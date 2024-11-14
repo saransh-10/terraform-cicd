@@ -9,7 +9,7 @@ resource "azurerm_private_endpoint" "pep" {
     private_connection_resource_id = var.privateResourceId
     subresource_names              = var.subresourceNames
     is_manual_connection           = var.isManualConnection
-    request_message                = var.isManualConnection== false? null : "Create Private Endpoint" 
+    request_message                = var.isManualConnection == false ? null : "Create Private Endpoint"
   }
   dynamic "private_dns_zone_group" {
     for_each = var.privateDnsZoneGroupCondition ? { "element" = 1 } : {}

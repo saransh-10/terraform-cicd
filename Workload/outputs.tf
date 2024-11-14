@@ -19,7 +19,7 @@ output "private_dns_zone_id_db" {
 }
 
 output "subnet_compute_id" {
-  value       = module.subnet_compute.subnet_id
+  value       = module.subnet_compute[0].subnet_id
   description = "Compute Subnet ID"
 }
 

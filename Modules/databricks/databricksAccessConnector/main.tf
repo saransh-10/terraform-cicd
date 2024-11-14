@@ -5,7 +5,7 @@ resource "azurerm_databricks_access_connector" "accessConnector" {
   identity {
     type = "SystemAssigned"
   }
-  tags                = var.tags
+  tags = var.tags
 }
 
 resource "azurerm_role_assignment" "role_assignment" {

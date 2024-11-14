@@ -16,7 +16,7 @@ variable "network_interface_name" {
 variable "nic_ip_configuration_name" {
   description = "Name of the IP configuration"
   type        = string
-  default = "internal"
+  default     = "internal"
 }
 
 variable "nic_subnet_id" {
@@ -27,7 +27,7 @@ variable "nic_subnet_id" {
 variable "nic_private_ip_address_allocation" {
   description = "Method to allocate the private IP address (Dynamic or Static)"
   type        = string
-  default = "Dynamic"
+  default     = "Dynamic"
 }
 
 variable "vm_name" {
