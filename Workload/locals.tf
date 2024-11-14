@@ -27,7 +27,7 @@ locals {
       source_port_range          = "22"
       destination_port_range     = "*"
       source_address_prefix      = "10.10.0.0/16"
-      destination_address_prefix = "0.0.0.0/0"
+      destination_address_prefix = "AzureCloud"
     },
     vm_access_Inbound = {
       name                       = "VMAccess_Outbound"
@@ -37,7 +37,7 @@ locals {
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "22"
-      source_address_prefix      = "0.0.0.0/0"
+      source_address_prefix      = "AzureCloud"
       destination_address_prefix = "10.10.0.0/16"
     }
   }
