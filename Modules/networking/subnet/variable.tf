@@ -14,17 +14,9 @@ variable "virtual_network_name" {
   type        = string
   description = "The name of the Azure Virtual Network where the Subnet will be created."
 }
-# variable "private_endpoint_network_policies_enabled" {
-#   type        = bool
-#   description = "Indicates whether network policies are enabled for private endpoints on this subnet."
-# }
 variable "private_link_service_network_policies_enabled" {
   type        = bool
   description = "Indicates whether network policies are enabled for private link service on this subnet."
-}
-variable "service_endpoints" {
-  type        = list(string)
-  description = "The list of service endpoints to associate with the Azure Subnet."
 }
 variable "subnet_delegations" {
   type        = any
