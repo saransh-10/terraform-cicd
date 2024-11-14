@@ -24,10 +24,6 @@ variable "subnet_delegations" {
   default     = {}
   description = "Object of subnet delegations for the Azure Subnet."
 }
-variable "location" {
-  type        = string
-  description = "Location of vnet"
-}
 variable "nsg_id" {
   type        = string
   default     = ""
