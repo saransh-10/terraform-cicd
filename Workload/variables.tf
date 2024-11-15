@@ -25,10 +25,10 @@ variable "subnet_routetable_association" {
   description = "Route table association True if want to associate route table to subnet else false"
 }
 # Variable for the organization name
-variable "org_name" {
-  type        = string
-  description = "The name of the organization."
-}
+#variable "org_name" {
+#  type        = string
+#  description = "The name of the organization."
+#}
 # Variable for the business unit name
 variable "bu_name" {
   type        = string
