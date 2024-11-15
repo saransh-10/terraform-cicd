@@ -1,12 +1,12 @@
 locals {
   # Names
-  resource_group_name = lower("${var.org_name}-${var.bu_name}-net-rg-01")
+  resource_group_name = lower("rg-${var.bu_name}-centralus-01")
   # Vnet_name
-  virtual_network_name = lower("${var.org_name}-${var.bu_name}-vnet-01")
+  virtual_network_name = lower("vnet-${var.bu_name}-centralus-01")
   # Subnet_name
-  subnet_compute_name = lower("${var.org_name}-${var.bu_name}-snet-compute-01")
+  subnet_compute_name = lower("compute-snet-${var.bu_name}-centralus-01")
   #NSG
-  nsg_compute_name = "VMAccessNSG"
+  nsg_compute_name = lower("compute-nsg-${var.bu_name}-centralus-01")
   # Location
   location = lower("centralus")
   # Address Space for Virtual network
@@ -47,8 +47,8 @@ locals {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-  vm_machine_name        = lower("${var.org_name}-${var.bu_name}-compute-01")
-  network_interface_name = lower("${var.org_name}-${var.bu_name}-nic-compute-01")
+  vm_machine_name        = lower("vm-compute-${var.bu_name}-centralus-01")
+  network_interface_name = lower("vm-nic-${var.bu_name}-centralus-01")
   # nic_private_ip_address_allocation = "Dynamic"
   vm_image_reference = {
     sku       = "22_04-lts"
