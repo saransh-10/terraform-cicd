@@ -130,22 +130,6 @@ variable "metastore_region" {
   }
 }
 # Service Principle
-variable "client_id" {
-  type        = string
-  description = "Service prinicple Client ID"
-}
-variable "client_secret" {
-  type        = string
-  description = "Service prinicple Client Secret"
-}
-variable "tenant_id" {
-  type        = string
-  description = "Tenant ID"
-}
-variable "subscription_id" {
-  type        = string
-  description = "Subscription ID"
-}
 variable "Key_Vault_Secret" {
   description = "Details regarding Key Vault Secret"
   type = object({
