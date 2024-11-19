@@ -116,7 +116,7 @@ locals {
   storage_container_metastore_name = lower("metastore")
   storage_container_ext_name       = lower("external")
   access_connector_name            = "${var.org_name}-${var.bu_name}-dbwaccbg"
-  db_name                          = "${var.org_name}-${var.bu_name}-dbwbg"
+  db_name                          = "${var.org_name}-${var.bu_name}-dbwbg1"
   TargetSubresource = {
     adlsGen2BlobPeSubresourceNames = ["blob"]
     adlsGen2DfsPeSubresourceNames  = ["dfs"]
