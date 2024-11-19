@@ -39,7 +39,7 @@ metastore_region = "centralus"
 # Service Principle
 # RG_Location = "West US"
 Key_Vault = {
-  name                       = "kvoricatrnsit020"
+  name                       = "kvoricatrnsit021"
   tenant_id                  = "879756f6-3b3e-4e8d-a20f-d25e6d6d941f"
   soft_delete_retention_days = 7
   enabled_for_disk_encryption = true
