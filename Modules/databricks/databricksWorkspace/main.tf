@@ -5,6 +5,7 @@ resource "azurerm_databricks_workspace" "databricks" {
   sku                                   = var.databricksSku
   public_network_access_enabled         = var.publicNetworkAccessEnabled
   network_security_group_rules_required = "NoAzureDatabricksRules"
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
   custom_parameters {
     no_public_ip                                         = var.databricksNoPublicIp
     public_subnet_name                                   = var.databricksPublicSubnetName
@@ -13,5 +14,6 @@ resource "azurerm_databricks_workspace" "databricks" {
     public_subnet_network_security_group_association_id  = var.databricksPublicNSGId
     private_subnet_network_security_group_association_id = var.databricksPrivateNSGId
   }
+  
   tags = var.tags
 }

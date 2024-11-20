@@ -21,9 +21,14 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   network_security_group_id = var.nsg_id
   depends_on                = [azurerm_subnet.subnets]
 }
+resource "azurerm_route_table" "routetable" {
+  name = var.routeTableName
+  resource_group_name = var.subnet_rg_name
+  location = var.virtual_network_location
+}
 resource "azurerm_subnet_route_table_association" "rt_association" {
   count          = var.subnet_rt_association == true ? 1 : 0
   subnet_id      = azurerm_subnet.subnets.id
-  route_table_id = var.rt_id
+  route_table_id = azurerm_route_table.routetable.id
   depends_on     = [azurerm_subnet.subnets]
 }

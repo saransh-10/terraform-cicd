@@ -42,6 +42,10 @@ variable "publicNetworkAccessEnabled" {
   type        = string
   description = "Allow public access for accessing workspace. Set value to false to access workspace only via private link endpoint. Possible values include true or false. Defaults to true."
 }
+variable "infrastructure_encryption_enabled" {
+  type        = bool
+  description = "Enable Infrastructure Encryption."
+}
 variable "tags" {
   description = "A map of tags to assign to the Azure Databricks Workspace."
   type        = map(string)

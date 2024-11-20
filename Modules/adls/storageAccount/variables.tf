@@ -15,7 +15,7 @@ variable "storage_account_tier" {
   type        = string
   default     = "Standard"
 }
-# Variable for public access
+# Variable for public access 
 variable "network_rule" {
   type        = bool
   description = "True to enable Public access otherwise False"
@@ -38,4 +38,8 @@ variable "storage_identity_type" {
 variable "storage_identity_id" {
   description = "Storage identity ID"
   type        = list(string)
+}
+variable "infrastructure_encryption_enabled" {
+  type        = bool
+  description = "Enable Infrastructure Encryption."
 }

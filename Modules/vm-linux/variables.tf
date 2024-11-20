@@ -54,6 +54,7 @@ variable "vm_os_disk" {
   type = object({
     caching              = string
     storage_account_type = string
+    disk_size_gb = number
   })
 }
 variable "vm_image_reference" {

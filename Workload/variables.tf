@@ -8,12 +8,12 @@ variable "vnet_tags" {
   type        = map(string)
   description = "A map of tags to assign to the virtual network."
 }
-# Variable to define the address prefixes for host subnet
+# Variable to define the address prefixes for host subnet 
 variable "subnet_host_address_prefix" {
   type        = list(string)
   description = "A list of address prefixes for the host subnet."
 }
-# Variable to define the address prefixes for Container subnet
+# Variable to define the address prefixes for Container subnet 
 variable "subnet_container_address_prefix" {
   type        = list(string)
   description = "A list of address prefixes for the container subnet."
@@ -33,16 +33,7 @@ variable "subnet_routetable_association" {
   type        = bool
   description = "Route table association True if want to associate route table to subnet else false"
 }
-# Variable for the organization name
-variable "org_name" {
-  type        = string
-  description = "The name of the organization."
-}
-# Variable for the business unit name
-variable "bu_name" {
-  type        = string
-  description = "The name of the business unit."
-}
+
 # Variable for the environment name
 variable "environment" {
   type        = string
@@ -62,15 +53,15 @@ variable "vm_admin_username" {
   type        = string
   description = "Virtual Machine Admin Username"
 }
-variable "vm_admin_password" {
-  type        = string
-  description = "Virtual Machine Admin Password"
-}
 # Databricks Variables
 # Variable for public access for the databricks workspace
 variable "publicNetworkAccessEnabled" {
   type        = bool
   description = "True or False for public access to the workspace"
+}
+variable "infrastructure_encryption_enabled" {
+  type        = bool
+  description = "Enable Infrastructure Encryption."
 }
 # Variable for SKU for the workspace
 variable "databricksWorkspace" {
@@ -94,7 +85,7 @@ variable "container_access_type" {
   description = " (Optional) The Access Level configured for this Container. Possible values are blob, container or private. Defaults to private."
   type        = string
 }
-# Variable for public access
+# Variable for public access 
 variable "network_access_adls" {
   type        = bool
   description = "True to enable Public access otherwise False"
@@ -130,27 +121,23 @@ variable "metastore_region" {
   }
 }
 # Service Principle
-variable "Key_Vault_Secret" {
-  description = "Details regarding Key Vault Secret"
-  type = object({
-    name = string
-  })
-}
-variable "Key_Vault" {
-  description = "Details regarding Key Vault"
-  type = object({
-    name                        = string
-    tenant_id                   = string
-    enabled_for_disk_encryption = bool
-    enable_rbac_authorization   = bool
-    soft_delete_retention_days  = number
-    purge_protection_enabled    = bool
-    sku_name                    = string
-    # access_policy = object({
-    #   tenant_id           = string
-    #   object_id           = string
-    #   secret_permissions  = list(string)
-    #   key_permissions = list(string)
-    # })
-  })
+# variable "client_id" {
+#   type        = string
+#   description = "Service prinicple Client ID"
+# }
+# variable "client_secret" {
+#   type        = string
+#   description = "Service prinicple Client Secret"
+# }
+# variable "tenant_id" {
+#   type        = string
+#   description = "Tenant ID"
+# }
+# variable "subscription_id" {
+#   type        = string
+#   description = "Subscription ID"
+# }
+variable "routeTableName" {
+  description = "Creation of Route Table"
+  type        = list(string)
 }

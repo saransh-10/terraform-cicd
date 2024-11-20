@@ -8,6 +8,7 @@ resource "azurerm_storage_account" "storage" {
   is_hns_enabled                = var.is_hns_enabled
   public_network_access_enabled = var.network_rule
   min_tls_version               = "TLS1_2"
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
   identity {
     type         = var.storage_identity_type
     identity_ids = var.storage_identity_type == "SystemAssigned" ? [] : var.storage_identity_id

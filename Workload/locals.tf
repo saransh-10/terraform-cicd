@@ -1,28 +1,29 @@
+resource "random_uuid" "uuid" {}
 locals {
   # Names
-  resource_group_name = lower("${var.org_name}-${var.bu_name}-net-rg-01")
+  resource_group_name = "rg-databricks-test-westus2-01"
   # Vnet_name
-  virtual_network_name = lower("${var.org_name}-${var.bu_name}-vnet-01")
+  virtual_network_name = "vnet-databricks-test-westus2-01"
   # NSG_name
-  nsg_snet_host_name      = lower("${var.org_name}-${var.bu_name}-nsg-host-01")
-  nsg_snet_container_name = lower("${var.org_name}-${var.bu_name}-nsg-container-01")
+  nsg_snet_host_name      = "nsg-host-test-westus2-01"
+  nsg_snet_container_name = "nsg-container-test-westus2-01"
   # Vnet_Link_name
-  Virtual_Network_Link_Name = "Orica_PDZ_VNET_Link"
+  Virtual_Network_Link_Name = "vnet-link-test-westus2-01"
   # Subnet_name
-  subnet_host_name      = lower("${var.org_name}-${var.bu_name}-host-snet-01")
-  subnet_container_name = lower("${var.org_name}-${var.bu_name}-container-snet-01")
-  subnet_pep_name       = lower("${var.org_name}-${var.bu_name}-snet-pep-01")
-  # Privat DNS Zone
+  subnet_host_name      = "snet-host-test-01"
+  subnet_container_name = "snet-container-test-westus2-01"
+  subnet_pep_name       = "snet-pe-test-westus2-01"
+  # Privat DNS Zone 
   private_dns_zone_name = [
     "privatelink.blob.core.windows.net",
     "privatelink.dfs.core.windows.net",
     "privatelink.azuredatabricks.net",
   ]
   # Location
-  location = lower("centralus")
+  location = lower("westus2")
   # Address Space for Virtual network
   address_space_vnet = var.address_space_vnet
-  # Subnet deligations
+  # Subnet deligations 
   subnet_delegation = {
     subnet_delegation_name  = "databricks-del-public"
     service_delegation_name = "Microsoft.Databricks/workspaces"
@@ -38,72 +39,16 @@ locals {
   # subnet private link service network policies enabled or disabled
   # private_link_service_network_policies_enabled_true  = true
   private_link_service_network_policies_enabled_false = false
-  # Nsg details
-  # default_nsg_rule = {
-  #   databricks_workspace_inbound_wtw = {
-  #     name                       = "Ms.Databricks-workspace_worker-to-worker-inbound"
-  #     priority                   = 100
-  #     direction                  = "Inbound"
-  #     access                     = "Allow"
-  #     protocol                   = "*"
-  #     source_port_range          = "*"
-  #     destination_port_range     = "*"
-  #     source_address_prefix      = "VirtualNetwork"
-  #     destination_address_prefix = "VirtualNetwork"
-  #   },
-  #   databricks_workspace_outbound_wtw = {
-  #     name                       = "Ms.Databricks-workspace_worker-to-worker-outbound"
-  #     priority                   = 100
-  #     direction                  = "Outbound"
-  #     access                     = "Allow"
-  #     protocol                   = "*"
-  #     source_port_range          = "*"
-  #     destination_port_range     = "*"
-  #     source_address_prefix      = "VirtualNetwork"
-  #     destination_address_prefix = "VirtualNetwork"
-  #   },
-  #   databricks_workspace_outbound_wtsql = {
-  #     name                       = "Ms.Databricks-workspace_worker-to-sql-outbound"
-  #     priority                   = 101
-  #     direction                  = "Outbound"
-  #     access                     = "Allow"
-  #     protocol                   = "Tcp"
-  #     source_port_range          = "3306"
-  #     destination_port_range     = "*"
-  #     source_address_prefix      = "VirtualNetwork"
-  #     destination_address_prefix = "Sql"
-  #   },
-  #   databricks_workspace_outbound_wtstorage = {
-  #     name                       = "Ms.Databricks-workspace_worker-to-storage-outbound"
-  #     priority                   = 102
-  #     direction                  = "Outbound"
-  #     access                     = "Allow"
-  #     protocol                   = "Tcp"
-  #     source_port_range          = "443"
-  #     destination_port_range     = "*"
-  #     source_address_prefix      = "VirtualNetwork"
-  #     destination_address_prefix = "Storage"
-  #   },
-  #   databricks_workspace_outbound_wteventhub = {
-  #     name                       = "Ms.Databricks-workspace_worker-to-eventhub-outbound"
-  #     priority                   = 103
-  #     direction                  = "Outbound"
-  #     access                     = "Allow"
-  #     protocol                   = "Tcp"
-  #     source_port_range          = "9093"
-  #     destination_port_range     = "*"
-  #     source_address_prefix      = "*"
-  #     destination_address_prefix = "EventHub"
-  #   }
-  # }
   # Compute Locals
-  # nsg_compute_name = lower("${var.org_name}-${var.bu_name}-nsg-compute-01")
+  nsg_compute_name = "nsg-nic-shr-test-westus2-01"
   vm_os_disk = {
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
+    disk_size_gb         = 128
   }
-  vm_machine_name        = lower("${var.org_name}-${var.bu_name}-compute-01")
-  network_interface_name = lower("${var.org_name}-${var.bu_name}-nic-compute-01")
+  vm_machine_name        = "vm-shr-test-westus2-01"
+  vm_admin_password      = random_uuid.uuid.result
+  network_interface_name = "nic-shr-test-westus2-01"
   # nic_private_ip_address_allocation = "Dynamic"
   vm_image_reference = {
     sku       = "22_04-lts"
@@ -112,11 +57,11 @@ locals {
     offer     = "0001-com-ubuntu-server-jammy"
   }
   # Databricks Locals
-  storage_account_name             = lower("${var.org_name}${var.bu_name}dls292")
-  storage_container_metastore_name = lower("metastore")
-  storage_container_ext_name       = lower("external")
-  access_connector_name            = "${var.org_name}-${var.bu_name}-dbwaccbg"
-  db_name                          = "${var.org_name}-${var.bu_name}-dbwbg1"
+  storage_account_name             = "stdbwmetatestwus201"
+  storage_container_metastore_name = lower("metastore-test-westus2-01")
+  storage_container_ext_name       = lower("external-location-test-westus2-01")
+  access_connector_name            = "dbacc-test-westus2-01"
+  db_name                          = "dbw-test-westus2-01"
   TargetSubresource = {
     adlsGen2BlobPeSubresourceNames = ["blob"]
     adlsGen2DfsPeSubresourceNames  = ["dfs"]
@@ -125,34 +70,27 @@ locals {
   }
   # Private Endpoints
   # Brows Auth
-  db_browsauth_pe_name           = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1"
-  db_browsauth_pe_nic_name       = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1-nic"
-  db_browsauth_pe_service_name   = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1"
-  db_browsauth_pe_dns_group_name = "${var.org_name}-${var.bu_name}-dbw-browsauth-pe1-dnsgroup"
+  db_browsauth_pe_name           = "pe-dbw-browsauth-test-westus2-01"
+  db_browsauth_pe_nic_name       = "pe-dbw-browsauth-nic-test-westus2-01"
+  db_browsauth_pe_service_name   = "pe-dbw-browsauth-svc-test-westus2-01"
+  db_browsauth_pe_dns_group_name = "pe-dbw-browsauth-dnsgroup-test-westus2-01"
   # UiApi
-  db_uiapi_pe_name           = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1"
-  db_uiapi_pe_nic_name       = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1-nic"
-  db_uiapi_pe_service_name   = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1"
-  db_uiapi_pe_dns_group_name = "${var.org_name}-${var.bu_name}-dbw-uiapi-pe1-dnsgroup"
+  db_uiapi_pe_name           = "pe-dbw-uiapi-test-westus2-01"
+  db_uiapi_pe_nic_name       = "pe-dbw-uiapi-nic-test-westus2-01"
+  db_uiapi_pe_service_name   = "pe-dbw-uiapi-svc-test-westus2-01"
+  db_uiapi_pe_dns_group_name = "pe-dbw-uiapi-dnsgroup-test-westus2-01"
   # Blob
-  adls_blob_pe_name           = "${var.org_name}-${var.bu_name}-dls2-blob-pe1"
-  adls_blob_pe_nic_name       = "${var.org_name}-${var.bu_name}-dls2-blob-pe1-nic"
-  adls_blob_pe_service_name   = "${var.org_name}-${var.bu_name}-dls2-blob-pe1"
-  adls_blob_pe_dns_group_name = "${var.org_name}-${var.bu_name}-dls2-blob-pe1-dnsgroup"
+  adls_blob_pe_name           = "pe-st-blob-test-westus2-01"
+  adls_blob_pe_nic_name       = "pe-st-blob-nic-test-westus2-01"
+  adls_blob_pe_service_name   = "pe-st-blob-svc-test-westus2-01"
+  adls_blob_pe_dns_group_name = "pe-st-blob-dnsgroup-test-westus2-01"
   # DFS
-  adls_dfs_pe_name           = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1"
-  adls_dfs_pe_nic_name       = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1-nic"
-  adls_dfs_pe_service_name   = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1"
-  adls_dfs_pe_dns_group_name = "${var.org_name}-${var.bu_name}-dls2-dfs-pe1-dnsgroup"
+  adls_dfs_pe_name           = "pe-st-dfs-test-westus2-01"
+  adls_dfs_pe_nic_name       = "pe-st-dfs-nic-test-westus2-01"
+  adls_dfs_pe_service_name   = "pe-st-dfs-svc-test-westus2-01"
+  adls_dfs_pe_dns_group_name = "pe-st-dfs-dnsgroup-test-westus2-01"
   # Metastore Locals
   metastore_name                   = var.metastore_region
   container_name                   = local.storage_container_metastore_name
   metastore_storage_container_name = format("abfss://%s@%s.dfs.core.windows.net/", local.container_name, local.storage_account_name)
-}
-
-locals {
-  Tags = {
-    Environment = "Production"
-    Department  = "Cloud Infra & Security"
-  }
 }

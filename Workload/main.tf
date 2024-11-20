@@ -30,9 +30,11 @@ module "subnet_host" {
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_snet_host.nsg_id
   subnet_rt_association                         = var.subnet_routetable_association
+  virtual_network_location                      = local.location
+  routeTableName                                = var.routeTableName[0]
 }
 # ......................................................
-# Creation of Container Subnet
+# Creation of Container Subnet 
 # ......................................................
 module "subnet_container" {
   source                                        = "../Modules/networking/subnet"
@@ -44,6 +46,8 @@ module "subnet_container" {
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_snet_container.nsg_id
   subnet_rt_association                         = var.subnet_routetable_association
+  virtual_network_location                      = local.location
+  routeTableName                                = var.routeTableName[1]
 }
 # ......................................................
 # Creation of Private Endpoint Subnet
@@ -58,6 +62,20 @@ module "subnet_pep" {
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   subnet_nsg_association                        = false
   subnet_rt_association                         = var.subnet_routetable_association
+  virtual_network_location                      = local.location
+  routeTableName                                = var.routeTableName[2]
+}
+# ......................................................
+# Creation of NSG for Compute
+# ......................................................
+module "nsg_compute" {
+  source       = "../Modules/networking/networkSecurityGroup"
+  nsg_name     = local.nsg_compute_name
+  nsg_location = local.location
+  nsg_rg_name  = module.RG.resource_group_name
+  # sec_rule     = []
+  nsg_tags   = var.nsg_tags
+  depends_on = [module.vnet]
 }
 # ......................................................
 # Creation of NSG for Host
@@ -72,7 +90,7 @@ module "nsg_snet_host" {
   depends_on = [module.vnet]
 }
 # ......................................................
-# Creation of NSG for Container
+# Creation of NSG for Container 
 # ......................................................
 module "nsg_snet_container" {
   source       = "../Modules/networking/networkSecurityGroup"
@@ -84,7 +102,7 @@ module "nsg_snet_container" {
   depends_on = [module.vnet]
 }
 # ......................................................
-# Creating Private DNS Zone
+# Creating Private DNS Zone 
 # ......................................................
 module "private_dns_zone" {
   source                               = "../Modules/networking/privateDNSZone"
@@ -126,20 +144,21 @@ module "compute" {
   vm_image_reference     = local.vm_image_reference
   vm_public_key          = null
   admin_ssh_key          = null
-  admin_password         = var.vm_admin_password
+  admin_password         = local.vm_admin_password
 }
 # Databricks Workload
 # ......................................................
-# Creating ADLSGen2 for metastore
+# Creating ADLSGen2 for metastore 
 # ......................................................
 module "ADLSGen2" {
-  source               = "../Modules/adls/storageAccount"
-  resource_group_name  = module.RG.resource_group_name
-  location             = module.RG.resource_group_location
-  storage_account_name = local.storage_account_name
-  storage_identity_id  = ["SystemAssigned"]
-  network_rule         = var.network_access_adls
-  depends_on           = [module.vnet]
+  source                            = "../Modules/adls/storageAccount"
+  resource_group_name               = module.RG.resource_group_name
+  location                          = module.RG.resource_group_location
+  storage_account_name              = local.storage_account_name
+  storage_identity_id               = ["SystemAssigned"]
+  network_rule                      = var.network_access_adls
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
+  depends_on                        = [module.vnet]
 }
 # ......................................................
 # Creating Container for metastore
@@ -147,7 +166,7 @@ module "ADLSGen2" {
 module "container_metastore" {
   count                  = var.environment == "transit" ? 1 : 0
   source                 = "../Modules/adls/container"
-  storage_account_id     = module.ADLSGen2.storage_account_id
+  storage_account_name   = local.storage_account_name
   storage_container_name = local.storage_container_metastore_name
   container_access_type  = var.container_access_type
   depends_on             = [module.ADLSGen2]
@@ -158,7 +177,7 @@ module "container_metastore" {
 module "container_external_location" {
   count                  = var.environment == "transit" ? 0 : 1
   source                 = "../Modules/adls/container"
-  storage_account_id   = module.ADLSGen2.storage_account_id
+  storage_account_name   = local.storage_account_name
   storage_container_name = local.storage_container_ext_name
   container_access_type  = var.container_access_type
   depends_on             = [module.ADLSGen2]
@@ -180,20 +199,21 @@ module "databricksAccessConnector" {
 # Module: Azure Databricks Workspace
 # ......................................................
 module "databricksWorkspace" {
-  source                      = "../Modules/databricks/databricksWorkspace"
-  databricksName              = local.db_name
-  resourceGroupName           = module.RG.resource_group_name
-  location                    = module.RG.resource_group_location
-  databricksNoPublicIp        = true
-  databricksPrivateNSGId      = module.nsg_snet_container.nsg_id
-  databricksPrivateSubnetName = module.subnet_container.subnet_name
-  databricksPublicNSGId       = module.nsg_snet_host.nsg_id
-  databricksPublicSubnetName  = module.subnet_host.subnet_name
-  databricksVnetId            = module.vnet.virtual_network_id
-  databricksSku               = var.databricksWorkspace.sku
-  publicNetworkAccessEnabled  = var.publicNetworkAccessEnabled
-  tags                        = var.tags
-  depends_on                  = [module.databricksAccessConnector, module.ADLSGen2]
+  source                            = "../Modules/databricks/databricksWorkspace"
+  databricksName                    = local.db_name
+  resourceGroupName                 = module.RG.resource_group_name
+  location                          = module.RG.resource_group_location
+  databricksNoPublicIp              = true
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
+  databricksPrivateNSGId            = module.nsg_snet_container.nsg_id
+  databricksPrivateSubnetName       = module.subnet_container.subnet_name
+  databricksPublicNSGId             = module.nsg_snet_host.nsg_id
+  databricksPublicSubnetName        = module.subnet_host.subnet_name
+  databricksVnetId                  = module.vnet.virtual_network_id
+  databricksSku                     = var.databricksWorkspace.sku
+  publicNetworkAccessEnabled        = var.publicNetworkAccessEnabled
+  tags                              = var.tags
+  depends_on                        = [module.databricksAccessConnector, module.ADLSGen2]
 }
 # ..........................................................................
 # Module: Browser Authentication Private Endpoint for Databricks Workspace
@@ -286,40 +306,6 @@ module "metastore_workspace_assignment_transit" {
 module "metastore_workspace_assignment" {
   count         = var.environment == "transit" ? 0 : 1
   source        = "../Modules/databricks/databricks-metastore-workspace-assignment"
-  metastore_id  = data.databricks_metastores.all[0].ids["centralus"]
+  metastore_id  = data.databricks_metastores.all[0].ids["westus2"]
   workspace_ids = split("-", split(".", module.databricksWorkspace.databricksWorkspaceUrl)[0])[1]
-}
-
-
-module "Key_Vault" {
-  source              = "../Modules/KeyVault"
-  location            = module.RG.resource_group_location
-  resource_group_name = module.RG.resource_group_name
-  Key_Vault = {
-    name                        = var.Key_Vault.name
-    tenant_id                   = var.Key_Vault.tenant_id
-    enabled_for_disk_encryption = var.Key_Vault.enabled_for_disk_encryption
-    soft_delete_retention_days  = var.Key_Vault.soft_delete_retention_days
-    purge_protection_enabled    = var.Key_Vault.purge_protection_enabled
-    enable_rbac_authorization   = var.Key_Vault.enable_rbac_authorization
-    sku_name                    = var.Key_Vault.sku_name
-    # access_policy = {
-    #   tenant_id          = local.Tenant_Id
-    #   object_id          = local.Object_Id
-    #   secret_permissions = var.Key_Vault.access_policy.secret_permissions
-    #   key_permissions = var.Key_Vault.access_policy.key_permissions
-    # }
-  }
-  Tags       = local.Tags
-  depends_on = [module.RG, module.compute]
-}
-
-module "KeyVaultSecret" {
-  source       = "../Modules/KeyVaultSecret"
-  secret_value = local.secret_value
-  Key_Vault_Id = module.Key_Vault.Key_Vault_Id
-  Key_Vault_Secret = {
-    name = var.Key_Vault_Secret.name
-  }
-  depends_on = [module.Key_Vault]
 }
