@@ -15,7 +15,7 @@ variable "storage_account_tier" {
   type        = string
   default     = "Standard"
 }
-# Variable for public access 
+# Variable for public access
 variable "network_rule" {
   type        = bool
   description = "True to enable Public access otherwise False"

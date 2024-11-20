@@ -8,12 +8,12 @@ variable "vnet_tags" {
   type        = map(string)
   description = "A map of tags to assign to the virtual network."
 }
-# Variable to define the address prefixes for host subnet 
+# Variable to define the address prefixes for host subnet
 variable "subnet_host_address_prefix" {
   type        = list(string)
   description = "A list of address prefixes for the host subnet."
 }
-# Variable to define the address prefixes for Container subnet 
+# Variable to define the address prefixes for Container subnet
 variable "subnet_container_address_prefix" {
   type        = list(string)
   description = "A list of address prefixes for the container subnet."
@@ -85,7 +85,7 @@ variable "container_access_type" {
   description = " (Optional) The Access Level configured for this Container. Possible values are blob, container or private. Defaults to private."
   type        = string
 }
-# Variable for public access 
+# Variable for public access
 variable "network_access_adls" {
   type        = bool
   description = "True to enable Public access otherwise False"

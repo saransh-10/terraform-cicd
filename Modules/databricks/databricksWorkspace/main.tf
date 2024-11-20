@@ -14,6 +14,6 @@ resource "azurerm_databricks_workspace" "databricks" {
     public_subnet_network_security_group_association_id  = var.databricksPublicNSGId
     private_subnet_network_security_group_association_id = var.databricksPrivateNSGId
   }
-  
+
   tags = var.tags
 }

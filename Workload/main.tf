@@ -34,7 +34,7 @@ module "subnet_host" {
   routeTableName                                = var.routeTableName[0]
 }
 # ......................................................
-# Creation of Container Subnet 
+# Creation of Container Subnet
 # ......................................................
 module "subnet_container" {
   source                                        = "../Modules/networking/subnet"
@@ -90,7 +90,7 @@ module "nsg_snet_host" {
   depends_on = [module.vnet]
 }
 # ......................................................
-# Creation of NSG for Container 
+# Creation of NSG for Container
 # ......................................................
 module "nsg_snet_container" {
   source       = "../Modules/networking/networkSecurityGroup"
@@ -102,7 +102,7 @@ module "nsg_snet_container" {
   depends_on = [module.vnet]
 }
 # ......................................................
-# Creating Private DNS Zone 
+# Creating Private DNS Zone
 # ......................................................
 module "private_dns_zone" {
   source                               = "../Modules/networking/privateDNSZone"
@@ -148,7 +148,7 @@ module "compute" {
 }
 # Databricks Workload
 # ......................................................
-# Creating ADLSGen2 for metastore 
+# Creating ADLSGen2 for metastore
 # ......................................................
 module "ADLSGen2" {
   source                            = "../Modules/adls/storageAccount"
