@@ -28,7 +28,7 @@ tags = {
 }
 infrastructure_encryption_enabled = true
 publicNetworkAccessEnabled = false
-# metastore
+# metastore.
 # For databricks authentication service principal
 databricks_host_name  = "https://accounts.azuredatabricks.net/"
 databricks_account_id = "4a194bb4-4fef-4d8a-add2-1c51a76a61b6"
