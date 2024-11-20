@@ -39,7 +39,3 @@ variable "storage_identity_id" {
   description = "Storage identity ID"
   type        = list(string)
 }
-variable "infrastructure_encryption_enabled" {
-  type        = bool
-  description = "Enable Infrastructure Encryption."
-}
