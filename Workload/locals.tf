@@ -13,7 +13,7 @@ locals {
   subnet_host_name      = "snet-host-test-01"
   subnet_container_name = "snet-container-test-westus2-01"
   subnet_pep_name       = "snet-pe-test-westus2-01"
-  # Privat DNS Zone 
+  # Privat DNS Zone
   private_dns_zone_name = [
     "privatelink.blob.core.windows.net",
     "privatelink.dfs.core.windows.net",
@@ -23,7 +23,7 @@ locals {
   location = lower("westus2")
   # Address Space for Virtual network
   address_space_vnet = var.address_space_vnet
-  # Subnet deligations 
+  # Subnet deligations
   subnet_delegation = {
     subnet_delegation_name  = "databricks-del-public"
     service_delegation_name = "Microsoft.Databricks/workspaces"
