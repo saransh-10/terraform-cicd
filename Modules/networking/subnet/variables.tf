@@ -39,7 +39,6 @@ variable "subnet_rt_association" {
   default     = true
   description = "subnet rt assocation bool: defaults to true"
 }
-
 variable "virtual_network_location" {
   type        = string
   description = "The location (region) where the Azure Virtual Network will be created."
