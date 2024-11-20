@@ -7,6 +7,12 @@ on:
       - main
     paths:
       - 'Deployment/transit.tfvars'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'main'
 jobs:
   tf_pre-commit:
     name: Terraform Pre-commit
