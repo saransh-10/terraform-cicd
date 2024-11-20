@@ -13,7 +13,7 @@ PDZ_tags = {
 }
 environment                   = "transit"
 subnet_routetable_association = true
-# Compute-
+# Compute
 vm_machine_size   = "Standard_D2s_v3"
 vm_admin_username = "admintest"
 # Databricks
