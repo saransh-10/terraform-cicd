@@ -34,6 +34,7 @@ resource "azurerm_linux_virtual_machine" "virtual_machine" {
   os_disk {
     caching              = var.vm_os_disk.caching
     storage_account_type = var.vm_os_disk.storage_account_type
+    disk_size_gb = var.vm_os_disk.disk_size_gb
   }
   # This dynamic block defines the source image reference for the Azure Linux virtual machine, based on provided image parameters if the source image ID is not specified.
   source_image_reference {

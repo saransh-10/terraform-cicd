@@ -29,11 +29,6 @@ variable "nsg_id" {
   default     = ""
   description = "network security group id to associate subnet with."
 }
-variable "rt_id" {
-  type        = string
-  default     = ""
-  description = "route table id to associate subnet with."
-}
 variable "subnet_nsg_association" {
   type        = bool
   default     = true
@@ -43,4 +38,13 @@ variable "subnet_rt_association" {
   type        = bool
   default     = true
   description = "subnet rt assocation bool: defaults to true"
+}
+
+variable "virtual_network_location" {
+  type        = string
+  description = "The location (region) where the Azure Virtual Network will be created."
+}
+variable "routeTableName" {
+  description = "Creation of Route Table"
+  type = string
 }

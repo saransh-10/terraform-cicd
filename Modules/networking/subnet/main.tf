@@ -1,9 +1,8 @@
 resource "azurerm_subnet" "subnets" {
-  name                 = var.subnet_name
-  resource_group_name  = var.subnet_rg_name
-  address_prefixes     = var.subnet_address_prefixes
-  virtual_network_name = var.virtual_network_name
-  # private_endpoint_network_policies_enabled     = var.private_endpoint_network_policies_enabled
+  name                                          = var.subnet_name
+  resource_group_name                           = var.subnet_rg_name
+  address_prefixes                              = var.subnet_address_prefixes
+  virtual_network_name                          = var.virtual_network_name
   private_link_service_network_policies_enabled = var.private_link_service_network_policies_enabled
   dynamic "delegation" {
     for_each = var.subnet_delegations == {} ? [] : ["delegation"]
@@ -22,9 +21,14 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   network_security_group_id = var.nsg_id
   depends_on                = [azurerm_subnet.subnets]
 }
+resource "azurerm_route_table" "routetable" {
+  name = var.routeTableName
+  resource_group_name = var.subnet_rg_name
+  location = var.virtual_network_location
+}
 resource "azurerm_subnet_route_table_association" "rt_association" {
   count          = var.subnet_rt_association == true ? 1 : 0
   subnet_id      = azurerm_subnet.subnets.id
-  route_table_id = var.rt_id
+  route_table_id = azurerm_route_table.routetable.id
   depends_on     = [azurerm_subnet.subnets]
 }

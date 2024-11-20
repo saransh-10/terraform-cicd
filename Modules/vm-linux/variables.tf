@@ -2,14 +2,6 @@ variable "network_interface_name" {
   description = "Name of the network interface"
   type        = string
 }
-# variable "network_interface_location" {
-#   description = "Location of the network interface"
-#   type        = string
-# }
-# variable "network_interface_resource_group_name" {
-#   description = "Name of the resource group containing the network interface"
-#   type        = string
-# }
 variable "nic_ip_configuration_name" {
   description = "Name of the IP configuration"
   type        = string
@@ -53,10 +45,6 @@ variable "admin_password" {
   type        = string
   sensitive   = true
 }
-# variable "source_image_id" {
-#   description = "The ID of the source image to be used for the virtual machine."
-#   type        = string
-# }
 variable "vm_public_key" {
   description = "The public SSH key to be used for authentication to the virtual machine."
   type        = string
@@ -66,6 +54,7 @@ variable "vm_os_disk" {
   type = object({
     caching              = string
     storage_account_type = string
+    disk_size_gb = number
   })
 }
 variable "vm_image_reference" {
