@@ -1,8 +1,3 @@
-# Variable to define the address space for the virtual network
-variable "address_space_vnet" {
-  type        = list(string)
-  description = "The address space for the virtual network."
-}
 # Variable to define tags for the virtual network
 variable "vnet_tags" {
   type        = map(string)
@@ -33,7 +28,6 @@ variable "subnet_routetable_association" {
   type        = bool
   description = "Route table association True if want to associate route table to subnet else false"
 }
-
 # Variable for the environment name
 variable "environment" {
   type        = string
@@ -121,22 +115,22 @@ variable "metastore_region" {
   }
 }
 # Service Principle
-# variable "client_id" {
-#   type        = string
-#   description = "Service prinicple Client ID"
-# }
-# variable "client_secret" {
-#   type        = string
-#   description = "Service prinicple Client Secret"
-# }
-# variable "tenant_id" {
-#   type        = string
-#   description = "Tenant ID"
-# }
-# variable "subscription_id" {
-#   type        = string
-#   description = "Subscription ID"
-# }
+variable "client_id" {
+  type        = string
+  description = "Service prinicple Client ID"
+}
+variable "client_secret" {
+  type        = string
+  description = "Service prinicple Client Secret"
+}
+variable "tenant_id" {
+  type        = string
+  description = "Tenant ID"
+}
+variable "subscription_id" {
+  type        = string
+  description = "Subscription ID"
+}
 variable "routeTableName" {
   description = "Creation of Route Table"
   type        = list(string)

@@ -1,22 +1,22 @@
 # ......................................................
 # Creating New Resource Group
 # ......................................................
-module "RG" {
-  source                  = "../Modules/rg"
-  resource_group_name     = local.resource_group_name
-  resource_group_location = local.location
-}
+# module "RG" {
+#   source                  = "../Modules/rg"
+#   resource_group_name     = local.resource_group_name
+#   resource_group_location = data.azurerm_resource_group.NetworkRG.location
+# }
 # ......................................................
 # Creating New Virtual Network
 # ......................................................
-module "vnet" {
-  source                        = "../Modules/networking/virtualNetwork"
-  new_virtual_network_name      = local.virtual_network_name
-  virtual_network_location      = local.location
-  virtual_network_address_space = local.address_space_vnet
-  resource_group_name           = module.RG.resource_group_name
-  virtual_network_tags          = var.vnet_tags
-}
+# module "vnet" {
+#   source                        = "../Modules/networking/virtualNetwork"
+#   new_virtual_network_name      = local.VNet_Name
+#   virtual_network_location      = data.azurerm_resource_group.NetworkRG.location
+#   virtual_network_address_space = local.address_space_vnet
+#   resource_group_name           = data.azurerm_resource_group.AppRG.name
+#   virtual_network_tags          = var.vnet_tags
+# }
 # ......................................................
 # Creation of Host Subnet
 # ......................................................
@@ -24,13 +24,13 @@ module "subnet_host" {
   source                                        = "../Modules/networking/subnet"
   subnet_name                                   = local.subnet_host_name
   subnet_address_prefixes                       = var.subnet_host_address_prefix
-  subnet_rg_name                                = module.RG.resource_group_name
-  virtual_network_name                          = module.vnet.virtual_network_name
+  subnet_rg_name                                = data.azurerm_resource_group.NetworkRG.name
+  virtual_network_name                          = data.azurerm_virtual_network.NetworkVNet.name
   subnet_delegations                            = local.subnet_delegation
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_snet_host.nsg_id
   subnet_rt_association                         = var.subnet_routetable_association
-  virtual_network_location                      = local.location
+  virtual_network_location                      = data.azurerm_resource_group.NetworkRG.location
   routeTableName                                = var.routeTableName[0]
 }
 # ......................................................
@@ -40,13 +40,13 @@ module "subnet_container" {
   source                                        = "../Modules/networking/subnet"
   subnet_name                                   = local.subnet_container_name
   subnet_address_prefixes                       = var.subnet_container_address_prefix
-  subnet_rg_name                                = module.RG.resource_group_name
-  virtual_network_name                          = module.vnet.virtual_network_name
+  subnet_rg_name                                = data.azurerm_resource_group.NetworkRG.name
+  virtual_network_name                          = data.azurerm_virtual_network.NetworkVNet.name
   subnet_delegations                            = local.subnet_delegation
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   nsg_id                                        = module.nsg_snet_container.nsg_id
   subnet_rt_association                         = var.subnet_routetable_association
-  virtual_network_location                      = local.location
+  virtual_network_location                      = data.azurerm_resource_group.NetworkRG.location
   routeTableName                                = var.routeTableName[1]
 }
 # ......................................................
@@ -56,13 +56,13 @@ module "subnet_pep" {
   source                                        = "../Modules/networking/subnet"
   subnet_name                                   = local.subnet_pep_name
   subnet_address_prefixes                       = var.subnet_pep_address_prefix
-  subnet_rg_name                                = module.RG.resource_group_name
-  virtual_network_name                          = module.vnet.virtual_network_name
+  subnet_rg_name                                = data.azurerm_resource_group.NetworkRG.name
+  virtual_network_name                          = data.azurerm_virtual_network.NetworkVNet.name
   subnet_delegations                            = local.subnet_delegation_null
   private_link_service_network_policies_enabled = local.private_link_service_network_policies_enabled_false
   subnet_nsg_association                        = false
   subnet_rt_association                         = var.subnet_routetable_association
-  virtual_network_location                      = local.location
+  virtual_network_location                      = data.azurerm_resource_group.NetworkRG.location
   routeTableName                                = var.routeTableName[2]
 }
 # ......................................................
@@ -71,11 +71,10 @@ module "subnet_pep" {
 module "nsg_compute" {
   source       = "../Modules/networking/networkSecurityGroup"
   nsg_name     = local.nsg_compute_name
-  nsg_location = local.location
-  nsg_rg_name  = module.RG.resource_group_name
+  nsg_location = data.azurerm_resource_group.NetworkRG.location
+  nsg_rg_name  = data.azurerm_resource_group.NetworkRG.name
   # sec_rule     = []
   nsg_tags   = var.nsg_tags
-  depends_on = [module.vnet]
 }
 # ......................................................
 # Creation of NSG for Host
@@ -83,11 +82,10 @@ module "nsg_compute" {
 module "nsg_snet_host" {
   source       = "../Modules/networking/networkSecurityGroup"
   nsg_name     = local.nsg_snet_host_name
-  nsg_location = local.location
-  nsg_rg_name  = module.RG.resource_group_name
+  nsg_location = data.azurerm_resource_group.NetworkRG.location
+  nsg_rg_name  = data.azurerm_resource_group.NetworkRG.name
   # sec_rule     = null
   nsg_tags   = var.nsg_tags
-  depends_on = [module.vnet]
 }
 # ......................................................
 # Creation of NSG for Container
@@ -95,11 +93,10 @@ module "nsg_snet_host" {
 module "nsg_snet_container" {
   source       = "../Modules/networking/networkSecurityGroup"
   nsg_name     = local.nsg_snet_container_name
-  nsg_location = local.location
-  nsg_rg_name  = module.RG.resource_group_name
+  nsg_location = data.azurerm_resource_group.NetworkRG.location
+  nsg_rg_name  = data.azurerm_resource_group.NetworkRG.name
   # sec_rule     = null
   nsg_tags   = var.nsg_tags
-  depends_on = [module.vnet]
 }
 # ......................................................
 # Creating Private DNS Zone
@@ -108,9 +105,8 @@ module "private_dns_zone" {
   source                               = "../Modules/networking/privateDNSZone"
   count                                = length(local.private_dns_zone_name)
   private_dns_zone_name                = element(local.private_dns_zone_name, count.index)
-  private_dns_zone_resource_group_name = module.RG.resource_group_name
+  private_dns_zone_resource_group_name = data.azurerm_resource_group.NetworkRG.name
   private_dns_zone_tags                = var.PDZ_tags
-  depends_on                           = [module.vnet]
 }
 # ......................................................
 # Creating Private DNS Zone Vnet Link
@@ -120,8 +116,8 @@ module "Vnet_Link" {
   count                                 = length(local.private_dns_zone_name)
   private_dns_link_name                 = local.Virtual_Network_Link_Name
   private_dns_link_registration_enabled = local.private_dns_link_registration_enabled
-  private_dns_link_resource_group_name  = module.RG.resource_group_name
-  private_dns_link_virtual_network_id   = module.vnet.virtual_network_id
+  private_dns_link_resource_group_name  = data.azurerm_resource_group.NetworkRG.name
+  private_dns_link_virtual_network_id   = data.azurerm_virtual_network.NetworkVNet.id
   private_dns_link_zone_name            = element(local.private_dns_zone_name, count.index)
   private_dns_link_tags                 = var.PDZ_tags
   depends_on                            = [module.private_dns_zone]
@@ -136,11 +132,12 @@ module "compute" {
   vm_admin_username      = var.vm_admin_username
   vm_machine_size        = var.vm_machine_size
   nic_subnet_id          = module.subnet_pep.subnet_id
-  vm_location            = module.RG.resource_group_location
+  vm_location            = data.azurerm_resource_group.NetworkRG.location
+  vm_resource_group_name_nic = data.azurerm_resource_group.NetworkRG.name
   vm_name                = local.vm_machine_name
   network_interface_name = local.network_interface_name
   vm_os_disk             = local.vm_os_disk
-  vm_resource_group_name = module.RG.resource_group_name
+  vm_resource_group_name = data.azurerm_resource_group.AppRG.name
   vm_image_reference     = local.vm_image_reference
   vm_public_key          = null
   admin_ssh_key          = null
@@ -152,13 +149,13 @@ module "compute" {
 # ......................................................
 module "ADLSGen2" {
   source                            = "../Modules/adls/storageAccount"
-  resource_group_name               = module.RG.resource_group_name
-  location                          = module.RG.resource_group_location
+  resource_group_name               = data.azurerm_resource_group.NetworkRG.name
+  location                          = data.azurerm_resource_group.NetworkRG.location
   storage_account_name              = local.storage_account_name
+  account_replication_type      = local.account_replication_type
   storage_identity_id               = ["SystemAssigned"]
   network_rule                      = var.network_access_adls
   infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
-  depends_on                        = [module.vnet]
 }
 # ......................................................
 # Creating Container for metastore
@@ -188,8 +185,8 @@ module "container_external_location" {
 module "databricksAccessConnector" {
   source                        = "../Modules/databricks/databricksAccessConnector"
   databricksAccessConnectorName = local.access_connector_name
-  location                      = module.RG.resource_group_location
-  rgName                        = module.RG.resource_group_name
+  location                      = data.azurerm_resource_group.NetworkRG.location
+  rgName                        = data.azurerm_resource_group.AppRG.name
   tags                          = var.tags
   storage_account_id            = module.ADLSGen2.storage_account_id
   role_definition_name          = var.role_definition_name
@@ -201,15 +198,15 @@ module "databricksAccessConnector" {
 module "databricksWorkspace" {
   source                            = "../Modules/databricks/databricksWorkspace"
   databricksName                    = local.db_name
-  resourceGroupName                 = module.RG.resource_group_name
-  location                          = module.RG.resource_group_location
+  resourceGroupName                 = data.azurerm_resource_group.AppRG.name
+  location                          = data.azurerm_resource_group.NetworkRG.location
   databricksNoPublicIp              = true
   infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
   databricksPrivateNSGId            = module.nsg_snet_container.nsg_id
   databricksPrivateSubnetName       = module.subnet_container.subnet_name
   databricksPublicNSGId             = module.nsg_snet_host.nsg_id
   databricksPublicSubnetName        = module.subnet_host.subnet_name
-  databricksVnetId                  = module.vnet.virtual_network_id
+  databricksVnetId                  = data.azurerm_virtual_network.NetworkVNet.id
   databricksSku                     = var.databricksWorkspace.sku
   publicNetworkAccessEnabled        = var.publicNetworkAccessEnabled
   tags                              = var.tags
@@ -222,8 +219,8 @@ module "databricksBrowsAuthPEP" {
   count                        = var.environment == "transit" ? 1 : 0
   source                       = "../Modules/networking/privateEndpoint"
   peName                       = local.db_browsauth_pe_name
-  location                     = module.RG.resource_group_location
-  rgName                       = module.RG.resource_group_name
+  location                     = data.azurerm_resource_group.NetworkRG.location
+  rgName                       = data.azurerm_resource_group.NetworkRG.name
   peSubnetId                   = module.subnet_pep.subnet_id
   peNicName                    = local.db_browsauth_pe_nic_name
   serviceConnectionName        = local.db_browsauth_pe_service_name
@@ -239,8 +236,8 @@ module "databricksBrowsAuthPEP" {
 module "databricksUiApiPEP" {
   source                       = "../Modules/networking/privateEndpoint"
   peName                       = local.db_uiapi_pe_name
-  location                     = module.RG.resource_group_location
-  rgName                       = module.RG.resource_group_name
+  location                     = data.azurerm_resource_group.NetworkRG.location
+  rgName                       = data.azurerm_resource_group.NetworkRG.name
   peSubnetId                   = module.subnet_pep.subnet_id
   peNicName                    = local.db_uiapi_pe_nic_name
   serviceConnectionName        = local.db_uiapi_pe_service_name
@@ -256,8 +253,8 @@ module "databricksUiApiPEP" {
 module "adlsGen2DfsPEP" {
   source                       = "../Modules/networking/privateEndpoint"
   peName                       = local.adls_dfs_pe_name
-  location                     = module.RG.resource_group_location
-  rgName                       = module.RG.resource_group_name
+  location                     = data.azurerm_resource_group.NetworkRG.location
+  rgName                       = data.azurerm_resource_group.NetworkRG.name
   peSubnetId                   = module.subnet_pep.subnet_id
   peNicName                    = local.adls_dfs_pe_nic_name
   serviceConnectionName        = local.adls_dfs_pe_service_name
@@ -273,8 +270,8 @@ module "adlsGen2DfsPEP" {
 module "adlsGen2BlobPEP" {
   source                       = "../Modules/networking/privateEndpoint"
   peName                       = local.adls_blob_pe_name
-  location                     = module.RG.resource_group_location
-  rgName                       = module.RG.resource_group_name
+  location                     = data.azurerm_resource_group.NetworkRG.location
+  rgName                       = data.azurerm_resource_group.NetworkRG.name
   peSubnetId                   = module.subnet_pep.subnet_id
   peNicName                    = local.adls_blob_pe_nic_name
   serviceConnectionName        = local.adls_blob_pe_service_name
@@ -293,7 +290,7 @@ module "metastore_creation" {
   metastore_region = var.metastore_region
   adls_name        = local.metastore_storage_container_name
   acc_name         = module.databricksAccessConnector.access_id
-  depends_on       = [module.RG, module.vnet, module.databricksWorkspace, module.ADLSGen2, module.databricksAccessConnector]
+  depends_on       = [module.databricksWorkspace, module.ADLSGen2, module.databricksAccessConnector]
 }
 # Module to assign the created metastore to the Databricks workspaces.
 module "metastore_workspace_assignment_transit" {

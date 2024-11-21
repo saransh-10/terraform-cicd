@@ -14,13 +14,21 @@ output "private_dns_zone_id_db" {
   value       = module.private_dns_zone[2].private_dns_zone_id
   description = "Private DNS Zone Databricks resource ID"
 }
-output "resource_group_name" {
-  value       = module.RG.resource_group_name
-  description = "Resource Group name"
+output "appResource_group_name" {
+  value       = data.azurerm_resource_group.AppRG
+  description = "Resource Group name (PaaS)"
 }
-output "resource_group_location" {
-  value       = module.RG.resource_group_location
-  description = "Resource group Location"
+output "appResource_group_location" {
+  value       = data.azurerm_resource_group.AppRG.location
+  description = "Resource group Location (Paas)"
+}
+output "netResource_group_name" {
+  value       = data.azurerm_resource_group.NetworkRG.name
+  description = "Resource Group name (Network)"
+}
+output "netResource_group_location" {
+  value       = data.azurerm_resource_group.NetworkRG.location
+  description = "Resource group Location (Network)"
 }
 # Databricks output
 output "databricks_id" {

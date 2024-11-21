@@ -2,7 +2,7 @@
 resource "azurerm_network_interface" "vm_nic" {
   name                = var.network_interface_name
   location            = var.vm_location
-  resource_group_name = var.vm_resource_group_name
+  resource_group_name = var.vm_resource_group_name_nic
   # Defines an IP configuration for the network interface, specifying the configuration name, subnet ID, and method for allocating private IP addresses.
   ip_configuration {
     name                          = var.nic_ip_configuration_name

@@ -24,6 +24,10 @@ variable "vm_resource_group_name" {
   description = "Name of the resource group containing the virtual machine"
   type        = string
 }
+variable "vm_resource_group_name_nic" {
+  description = "Name of the resource group containing the NIC"
+  type        = string
+}
 variable "vm_location" {
   description = "Location of the virtual machine"
   type        = string
