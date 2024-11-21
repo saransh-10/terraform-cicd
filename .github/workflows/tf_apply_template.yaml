@@ -47,7 +47,7 @@ jobs:
             -backend-config="resource_group_name=Kartikeya-it-infra" \
             -backend-config="storage_account_name=oricademoaccount" \
             -backend-config="container_name=demo" \
-            -backend-config="key=${{ inputs.environment }}/transit.tfstate"
+            -backend-config="key=${{ inputs.environment }}.tfstate"
         working-directory: ${{ github.workspace }}/Workload
       # Terraform Apply
       - name: Terraform Apply
