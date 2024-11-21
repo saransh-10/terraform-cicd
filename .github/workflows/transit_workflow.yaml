@@ -23,6 +23,7 @@ jobs:
     uses: saransh-10/terraform-cicd/.github/workflows/tf_plan_template.yaml@main
     with:
       environment: transit
+      backend: transit
       var_file: transit.tfvars
     secrets: inherit
   tf_apply:
@@ -31,5 +32,6 @@ jobs:
     uses: saransh-10/terraform-cicd/.github/workflows/tf_apply_template.yaml@main
     with:
       environment: release-transit
+      backend: transit
       var_file: transit.tfvars
     secrets: inherit
