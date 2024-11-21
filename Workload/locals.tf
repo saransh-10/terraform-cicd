@@ -18,8 +18,6 @@ locals {
     "privatelink.dfs.core.windows.net",
     "privatelink.azuredatabricks.net",
   ]
-  # Location
-  location = lower("westus2")
   # Subnet deligations
   subnet_delegation = {
     subnet_delegation_name  = "databricks-del-public"
