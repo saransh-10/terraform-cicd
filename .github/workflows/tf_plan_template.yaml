@@ -37,7 +37,12 @@ jobs:
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
       - name: Terraform Init
-        run: terraform init
+        run: |
+          terraform init \
+              -backend-config="resource_group_name=Kartikeya-it-infra" \
+              -backend-config="storage_account_name=oricademoaccount" \
+              -backend-config="container_name=demo" \
+              -backend-config="key=${{ inputs.environment }}/transit.tfstate"
         working-directory: ${{ github.workspace }}/Workload
       # Generate the execution plan for Terraform
       # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes
