@@ -11,6 +11,9 @@ on:
       var_file:
         required: true
         type: string
+      backend:
+        required: true
+        type: string
 jobs:
   terraform-apply:
     name: Terraform Apply
