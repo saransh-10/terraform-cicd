@@ -1,8 +1,3 @@
-# Variable to define tags for the virtual network
-variable "vnet_tags" {
-  type        = map(string)
-  description = "A map of tags to assign to the virtual network."
-}
 # Variable to define the address prefixes for host subnet
 variable "subnet_host_address_prefix" {
   type        = list(string)
