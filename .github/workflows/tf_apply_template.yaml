@@ -42,7 +42,12 @@ jobs:
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
       # Terraform Initialise
       - name: Terraform Init
-        run: terraform init
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=Kartikeya-it-infra" \
+            -backend-config="storage_account_name=oricademoaccount" \
+            -backend-config="container_name=demo" \
+            -backend-config="key=${{ inputs.environment }}/test.tfstate"
         working-directory: ${{ github.workspace }}/Workload
       # Terraform Apply
       - name: Terraform Apply
