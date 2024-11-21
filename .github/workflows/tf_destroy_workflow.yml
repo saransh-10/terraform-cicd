@@ -1,0 +1,57 @@
+name: Terraform Destroy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment for destroy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
+          - transit
+      tfvars:
+       required: true
+       type: choice
+       options:
+         - transit.tfvars
+         - dev.tfvars
+         - uat.tfvars
+         - prod.tfvars
+      branch:
+        description: 'Branch to destroy from'
+        required: true
+        default: 'main'
+jobs:
+  terraform-destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      # Checkout the repository
+      - name: Checkout
+        uses: "actions/checkout@v4"
+      # Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      # Authenticate to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.Azure_Credential }}
+      - name: Set up Azure environment variables
+        run: |
+          echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+      # Terraform Initialise
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ github.workspace }}/Workload
+      # Terraform Destroy
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -var-file=${{ github.workspace }}/Deployment/${{ inputs.tfvars }}
+        working-directory: ${{ github.workspace }}/Workload
