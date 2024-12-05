@@ -1,0 +1,38 @@
+name: Dev Workflow
+# Workflow trigger
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Dev'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'main'
+jobs:
+  tf_pre-commit:
+    name: Terraform Pre-commit
+    uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
+  tf_plan:
+    name: Terraform Plan
+    needs: [tf_pre-commit]
+    uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
+    with:
+      environment: dev-plan
+      backend: dev
+      tfvars: Dev/Deployment/dev.tfvars
+      workloadDir: Dev/Workload
+    secrets: inherit
+  tf_apply:
+    name: Terraform Apply
+    needs: [tf_plan]
+    uses: saransh-10/terraform-cicd/.github/workflows/pre-commit_template.yml@main
+    with:
+      environment: dev-apply
+      backend: dev
+      tfvars: Dev/Deployment/dev.tfvars
+      workloadDir: Dev/Workload
+    secrets: inherit
